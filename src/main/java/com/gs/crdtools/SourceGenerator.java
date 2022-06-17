@@ -6,4 +6,8 @@ public class SourceGenerator {
         System.err.println("Not yet implemented");
         System.exit(1);
     }
+
+    static String testMe() {
+        return "I'm here";
+    }
 }
