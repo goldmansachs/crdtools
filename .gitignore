@@ -1,0 +1,5 @@
+.ijwb/
+bazel-crdtools
+bazel-out
+bazel-bin
+bazel-testlogs
