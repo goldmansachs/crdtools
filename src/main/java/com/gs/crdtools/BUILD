@@ -3,5 +3,6 @@ java_binary(
     srcs = ["SourceGenerator.java"],
     deps = [
         "@maven//:io_vavr_vavr",
-    ]
+    ],
+    visibility = ["//visibility:public"],
 )
