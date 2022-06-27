@@ -17,7 +17,10 @@ load("@rules_jvm_external//:defs.bzl", "maven_install")
 
 maven_install(
     artifacts = [
+       "io.kubernetes:client-java-api:14.0.1",
        "io.vavr:vavr:0.10.3",
+       "org.apache.commons:commons-compress:1.21",
+       "org.yaml:snakeyaml:1.30",
     ],
     repositories = [
         "https://repo1.maven.org/maven2",
