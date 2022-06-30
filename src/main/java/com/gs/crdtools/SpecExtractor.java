@@ -11,7 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
-import com.gs.crdtools.utils.VavrHelpers;
+import com.gs.utils.VavrHelpers;
 
 public class SpecExtractor {
 

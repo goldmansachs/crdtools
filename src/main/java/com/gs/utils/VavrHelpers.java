@@ -1,4 +1,4 @@
-package com.gs.crdtools.utils;
+package com.gs.utils;
 
 import io.vavr.Tuple;
 import io.vavr.collection.List;
