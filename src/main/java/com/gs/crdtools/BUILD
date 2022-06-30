@@ -13,6 +13,7 @@ java_binary(
     srcs = ["SpecExtractor.java"],
     main_class = "com.gs.crdtools.SpecExtractor",
     resources = ["@k8s-config-connector//:install-bundles/install-bundle-workload-identity/crds.yaml"],
+    visibility = ["//visibility:public"],
     deps = [
         "//src/main/java/com/gs/utils:vavr-helpers",
         "@maven//:io_kubernetes_client_java_api",
