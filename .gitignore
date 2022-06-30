@@ -3,3 +3,5 @@ bazel-crdtools
 bazel-out
 bazel-bin
 bazel-testlogs
+.idea
+*.iml
