@@ -7,3 +7,4 @@ bazel-testlogs
 *.iml
 expanded_external_deps.bzl
 external_deps.bzl
+src/main/test/java/com.gs.crdtools/

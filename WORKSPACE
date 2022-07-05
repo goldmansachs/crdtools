@@ -39,6 +39,8 @@ maven_install(
         "io.vavr:vavr:0.10.3",
         "org.apache.commons:commons-compress:1.21",
         "org.yaml:snakeyaml:1.30",
+        "com.fasterxml.jackson.core:jackson-databind:2.13.3",
+        "io.swagger.codegen.v3:swagger-codegen-cli:3.0.34",
     ],
     fetch_sources = True,
     repositories = [
