@@ -6,7 +6,9 @@ java_junit5_test(
         "*Test.java",
     ]),
     deps = [
-        "//src/main/java/com/gs/crdtools:SourceGenerator",
+        "//src/main/java/com/gs/crdtools:spec-extractor",
+        "//src/main/java/com/gs/crdtools:openapi-src-genner",
+        "//src/main/java/com/gs/crdtools:gen-source-from-spec",
     ],
     test_package = "com.gs.crdtools",
     size = "small",
