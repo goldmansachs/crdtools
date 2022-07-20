@@ -1,0 +1,183 @@
+package kccapi;
+
+import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import io.swagger.v3.oas.annotations.media.Schema;
+import kccapi.AccessContextManagerAccessLevelSpec;
+import kccapi.AccessContextManagerAccessLevelStatus;
+import kccapi.BaseObject;
+import org.springframework.validation.annotation.Validated;
+import javax.validation.Valid;
+import javax.validation.constraints.*;
+
+/**
+ * AccessContextManagerAccessLevel
+ */
+@Validated
+@JsonInclude(JsonInclude.Include.NON_NULL)
+
+public class AccessContextManagerAccessLevel extends BaseObject  {
+    @JsonProperty("apiVersion")
+    private String apiVersion = null;
+
+    @JsonProperty("kind")
+    private String kind = null;
+
+    @JsonProperty("metadata")
+    private io.kubernetes.client.openapi.models.V1ObjectMeta metadata = null;
+
+    @JsonProperty("spec")
+    private AccessContextManagerAccessLevelSpec spec = null;
+
+    @JsonProperty("status")
+    private AccessContextManagerAccessLevelStatus status = null;
+
+    public AccessContextManagerAccessLevel apiVersion(String apiVersion) {
+        this.apiVersion = apiVersion;
+        return this;
+    }
+
+    /**
+     * apiVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#resources
+     * @return apiVersion
+     **/
+    @Schema(description = "apiVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#resources")
+
+    public String getApiVersion() {
+        return apiVersion;
+    }
+
+    public void setApiVersion(String apiVersion) {
+        this.apiVersion = apiVersion;
+    }
+
+    public AccessContextManagerAccessLevel kind(String kind) {
+        this.kind = kind;
+        return this;
+    }
+
+    /**
+     * kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds
+     * @return kind
+     **/
+    @Schema(description = "kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds")
+
+    public String getKind() {
+        return kind;
+    }
+
+    public void setKind(String kind) {
+        this.kind = kind;
+    }
+
+    public AccessContextManagerAccessLevel metadata(io.kubernetes.client.openapi.models.V1ObjectMeta metadata) {
+        this.metadata = metadata;
+        return this;
+    }
+
+    /**
+     * Get metadata
+     * @return metadata
+     **/
+    @Schema(description = "")
+
+    @Valid
+    public io.kubernetes.client.openapi.models.V1ObjectMeta getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(io.kubernetes.client.openapi.models.V1ObjectMeta metadata) {
+        this.metadata = metadata;
+    }
+
+    public AccessContextManagerAccessLevel spec(AccessContextManagerAccessLevelSpec spec) {
+        this.spec = spec;
+        return this;
+    }
+
+    /**
+     * Get spec
+     * @return spec
+     **/
+    @Schema(required = true, description = "")
+    @NotNull
+
+    @Valid
+    public AccessContextManagerAccessLevelSpec getSpec() {
+        return spec;
+    }
+
+    public void setSpec(AccessContextManagerAccessLevelSpec spec) {
+        this.spec = spec;
+    }
+
+    public AccessContextManagerAccessLevel status(AccessContextManagerAccessLevelStatus status) {
+        this.status = status;
+        return this;
+    }
+
+    /**
+     * Get status
+     * @return status
+     **/
+    @Schema(description = "")
+
+    @Valid
+    public AccessContextManagerAccessLevelStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(AccessContextManagerAccessLevelStatus status) {
+        this.status = status;
+    }
+
+
+    @Override
+    public boolean equals(java.lang.Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        AccessContextManagerAccessLevel accessContextManagerAccessLevel = (AccessContextManagerAccessLevel) o;
+        return Objects.equals(this.apiVersion, accessContextManagerAccessLevel.apiVersion) &&
+                Objects.equals(this.kind, accessContextManagerAccessLevel.kind) &&
+                Objects.equals(this.metadata, accessContextManagerAccessLevel.metadata) &&
+                Objects.equals(this.spec, accessContextManagerAccessLevel.spec) &&
+                Objects.equals(this.status, accessContextManagerAccessLevel.status) &&
+                super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(apiVersion, kind, metadata, spec, status, super.hashCode());
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("class AccessContextManagerAccessLevel {\n");
+        sb.append("    ").append(toIndentedString(super.toString())).append("\n");
+        sb.append("    apiVersion: ").append(toIndentedString(apiVersion)).append("\n");
+        sb.append("    kind: ").append(toIndentedString(kind)).append("\n");
+        sb.append("    metadata: ").append(toIndentedString(metadata)).append("\n");
+        sb.append("    spec: ").append(toIndentedString(spec)).append("\n");
+        sb.append("    status: ").append(toIndentedString(status)).append("\n");
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces
+     * (except the first line).
+     */
+    private String toIndentedString(java.lang.Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
+    }
+}

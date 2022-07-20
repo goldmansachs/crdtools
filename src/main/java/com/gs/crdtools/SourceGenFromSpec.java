@@ -1,8 +1,9 @@
 package com.gs.crdtools;
 
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
-import io.swagger.codegen.v3.cli.MyCodegen;
-import io.swagger.codegen.v3.cli.SwaggerCodegen;
+import io.swagger.codegen.v3.ClientOptInput;
+import io.swagger.codegen.v3.DefaultGenerator;
+import io.swagger.codegen.v3.config.CodegenConfigurator;
 import io.vavr.collection.HashMap;
 import io.vavr.collection.HashSet;
 import io.vavr.collection.List;
@@ -14,6 +15,7 @@ import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
 
 /**
  * This class is used to generate the source code from the OpenAPI specs.
@@ -63,19 +65,21 @@ public class SourceGenFromSpec {
      * @throws RuntimeException If any error arises during the writing process.
      */
     private static void generateSourceInDir(Path specFile, Path out, Path outputDir) throws IOException, RuntimeException {
-        var args = List.of(
-                "generate",
-                "-i", specFile.toAbsolutePath().toString(),
-                "-l", MyCodegen.class.getCanonicalName(),
-                "-o", outputDir.toAbsolutePath().toString(),
-                "--model-package", "source-gen",
-                "--additional-properties", "java8=true", "hideGenerationTimestamp=true",
-                "notNullJacksonAnnotation=true",
-                "--type-mappings",
-                V1ObjectMeta.class.getSimpleName() + "=" + V1ObjectMeta.class.getCanonicalName()
-        );
+        Map<String, Object> config = HashMap.of(
+                "inputSpecURL", specFile.toAbsolutePath().toString(),
+                "lang", MyCodegen.class.getCanonicalName(),
+                "outputDir", outputDir.toAbsolutePath().toString(),
+                "modelPackage", "kccapi",
+                "additionalProperties", (Object) (HashMap.of("java8", true, "hideGenerationTimestamp", true, "notNullJacksonAnnotation", true)).toJavaMap(),
+                "typeMappings", (HashMap.of(V1ObjectMeta.class.getSimpleName(), V1ObjectMeta.class.getCanonicalName())).toJavaMap()
+        ).toJavaMap();
 
-        SwaggerCodegen.main(args.toJavaArray(String[]::new));
+
+        String absolute = SourceGeneratorHelper.createConfigFile(config);
+
+        CodegenConfigurator configurator = CodegenConfigurator.fromFile(absolute);
+        final ClientOptInput clientOptInput = configurator.toClientOptInput();
+        new DefaultGenerator().opts(clientOptInput).generate();
 
         SourceGeneratorHelper.writeJarToOutput(out, outputDir);
     }
@@ -119,4 +123,5 @@ public class SourceGenFromSpec {
 
         Files.writeString(specFile, yaml.dump(VavrHelpers.deepToJava(openapiSpecs, List.empty(), HashSet.of(String.class))));
     }
+
 }

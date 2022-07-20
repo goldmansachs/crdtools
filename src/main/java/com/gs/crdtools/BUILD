@@ -21,6 +21,11 @@ java_library(
     name = "openapi-src-genner",
     visibility = ["//visibility:public"],
     srcs = ["SourceGeneratorHelper.java"],
+    deps = [
+        "@maven//:io_vavr_vavr",
+        "@maven//:com_fasterxml_jackson_core_jackson_databind",
+        "@maven//:com_fasterxml_jackson_core_jackson_core",
+    ]
 )
 
 java_library(
@@ -28,6 +33,21 @@ java_library(
     srcs = ["VavrHelpers.java"],
     visibility = ["//visibility:public"],
     deps = ["@maven//:io_vavr_vavr"],
+)
+
+java_library(
+    name = "swagger-codegen",
+    srcs = ["MyCodegen.java"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/main/java/com/gs/crdtools:base-object",
+        "@maven//:io_kubernetes_client_java_api",
+        "@maven//:io_swagger_codegen_v3_swagger_codegen",
+        "@maven//:io_swagger_codegen_v3_swagger_codegen_generators",
+        "@maven//:io_swagger_core_v3_swagger_models",
+        "@maven//:io_swagger_parser_v3_swagger_parser",
+        "@maven//:io_vavr_vavr",
+    ],
 )
 
 java_binary(
@@ -42,10 +62,11 @@ java_binary(
     visibility = ["//visibility:public"],
     main_class = "com.gs.crdtools.SourceGenFromSpec",
     deps = [
-        "//src/main/java/com/gs/crdtools:openapi-src-genner",
         "//src/main/java/com/gs/crdtools:spec-extractor",
-        "//src/main/java/io/swagger/codegen/v3/cli:swagger-codegen-entrypoint",
         "//src/main/java/com/gs/crdtools:vavr-helpers",
+        "//src/main/java/com/gs/crdtools:swagger-codegen",
+        "//src/main/java/com/gs/crdtools:openapi-src-genner",
+        "@maven//:io_swagger_codegen_v3_swagger_codegen",
         "@maven//:io_kubernetes_client_java_api",
         "@maven//:io_vavr_vavr",
         "@maven//:org_yaml_snakeyaml",

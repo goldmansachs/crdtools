@@ -1,11 +1,10 @@
-package io.swagger.codegen.v3.cli;
+package com.gs.crdtools;
 
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.swagger.codegen.v3.CodegenModel;
 import io.swagger.codegen.v3.generators.java.SpringCodegen;
 import io.swagger.v3.oas.models.media.Schema;
 import io.vavr.collection.List;
-import com.gs.crdtools.BaseObject;
 
 /**
  * This class defines the specific implementation of the CodeGenerator.
@@ -13,8 +12,7 @@ import com.gs.crdtools.BaseObject;
 public class MyCodegen extends SpringCodegen {
 
     /**
-     * Create a new instance of a model from an existing one and
-     * additional metadata.
+     * Create a new instance of a model from existing schemas.
      * @param name The model's name.
      * @param schema The model's schema.
      * @param allSchemas The model's set of schemas.
@@ -41,7 +39,7 @@ public class MyCodegen extends SpringCodegen {
     }
 
     /**
-     * Generate CodegenModel with the previously fetched metadata.
+     * Configure CodegenModel with the previously fetched metadata from a given model.
      * @param model The model whose metadata is to be used.
      */
     private void generateMetaModel(CodegenModel model) {

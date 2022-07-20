@@ -9,9 +9,9 @@ load("@bazel_tools//tools/build_defs/repo:git.bzl", "new_git_repository")
 
 new_git_repository(
     name = "k8s-config-connector",
-    commit = "730c4bba8ec7dbeca5297b244ef1a62cddca1fb4",
+    commit = "1c096d9a6382fb0b6e54901e5b618f6ee9d0282b",
     remote = "https://github.com/GoogleCloudPlatform/k8s-config-connector.git",
-    shallow_since = "1654638128 +0000",
+    shallow_since = "",
     build_file_content = "exports_files(['install-bundles/install-bundle-workload-identity/crds.yaml'])"
 )
 
@@ -40,8 +40,15 @@ maven_install(
         "org.apache.commons:commons-compress:1.21",
         "org.yaml:snakeyaml:1.30",
         "com.fasterxml.jackson.core:jackson-databind:2.13.3",
-        "io.swagger.codegen.v3:swagger-codegen-cli:3.0.34",
+        "com.fasterxml.jackson.core:jackson-core:2.13.3",
+        "io.swagger.codegen.v3:swagger-codegen:3.0.34",
+        "io.swagger.codegen.v3:swagger-codegen-generators:1.0.34",
+        "io.swagger.parser.v3:swagger-parser-v3:2.1.1",
+        "io.swagger.core.v3:swagger-models:2.2.1",
     ],
+    override_targets = {
+        "com_atlassian_commonmark_commonmark" : "org_commonmark_commonmark",
+    },
     fetch_sources = True,
     repositories = [
         "https://repo1.maven.org/maven2",
