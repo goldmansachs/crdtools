@@ -9,6 +9,6 @@ alias(
 )
 
 alias(
-    name = "kcc_java_genned",
-    actual = "//src/main/java/com/gs/crdtools:kcc_java_genned",
+    name = "kcc-java-genned",
+    actual = "//src/main/java/com/gs/crdtools:kcc-java-genned",
 )
