@@ -25,3 +25,7 @@ choose "Manage Plugin Repositories". Add https://plugins.jetbrains.com/plugins/b
 the list of repositories. After this is done, the bazel plugin compatible with recent IntelliJ
 versions should be available by clicking "Marketplace" in the Plugins and searching for Bazel.
 This has been tested with IntelliJ Idea Community 2022.1.2.
+
+## Credits
+The code that this project is based on has been written by Jonathan Perry at
+[Goldman Sachs](https://www.gs.com/).
