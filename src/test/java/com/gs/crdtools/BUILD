@@ -15,6 +15,6 @@ java_junit5_test(
     test_package = "com.gs.crdtools",
     size = "small",
     data = [
-        "//src/test/resources:pet-store-yaml",
+        "//src/test/resources:all",
     ],
 )

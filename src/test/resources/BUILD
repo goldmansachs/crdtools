@@ -1,5 +1,5 @@
 filegroup(
-    name = "pet-store-yaml",
-    srcs = ["pet.yml"],
+    name = "all",
+    srcs = glob(["*"]),
     visibility = ["//visibility:public"],
 )

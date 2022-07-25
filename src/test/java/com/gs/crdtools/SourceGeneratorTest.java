@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import com.google.devtools.build.runfiles.Runfiles;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -124,8 +125,10 @@ public class SourceGeneratorTest {
     @Test
     @DisplayName("Test that the generated code is valid")
     void testGeneratedCode() throws IOException {
-        Path generatedCode = Path.of("/home/alfredo/Documents/MyContributionGS/crdtools/src/test/resources/AccessContextManagerAccessLevelCorrect.txt");
-        Path correctCode = Path.of("/home/alfredo/Documents/MyContributionGS/crdtools/src/test/resources/AccessContextManagerAccessLevelGenerated.txt");
+        var runFiles = Runfiles.create();
+
+        Path generatedCode = Path.of(runFiles.rlocation("__main__/src/test/resources/AccessContextManagerAccessLevelCorrect.txt"));
+        Path correctCode = Path.of(runFiles.rlocation("__main__/src/test/resources/AccessContextManagerAccessLevelGenerated.txt"));
 
         assertEquals(-1, Files.mismatch(generatedCode, correctCode));
     }
