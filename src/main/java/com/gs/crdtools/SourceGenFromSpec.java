@@ -1,8 +1,9 @@
 package com.gs.crdtools;
 
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
-import io.swagger.codegen.v3.cli.MyCodegen;
-import io.swagger.codegen.v3.cli.SwaggerCodegen;
+import io.swagger.codegen.v3.ClientOptInput;
+import io.swagger.codegen.v3.DefaultGenerator;
+import io.swagger.codegen.v3.config.CodegenConfigurator;
 import io.vavr.collection.HashMap;
 import io.vavr.collection.HashSet;
 import io.vavr.collection.List;
@@ -14,6 +15,7 @@ import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
 
 /**
  * This class is used to generate the source code from the OpenAPI specs.
@@ -28,20 +30,20 @@ public class SourceGenFromSpec {
      * to the number of parameters given:
      * 1 - generate the all-specs-only.yaml file
      * 2 - generate the complete source code from the spec file.
-     * @param argsIn The all-specs.yaml and genned.srcjar locations.
+     * @param args The all-specs.yaml and genned.srcjar locations.
      * @throws IOException If any error occurs while loading the given paths.
      * @throws IllegalArgumentException If the number of arguments is not 1 or 2.
      */
-    public static void main(String[] argsIn) throws IllegalArgumentException, IOException {
-        if (argsIn.length == 1) {
+    public static void main(String[] args) throws IllegalArgumentException, IOException {
+        if (args.length == 1) {
             // Generate  yaml only -- rule //:spec
-            var specFile = Paths.get(argsIn[0]);
+            var specFile = Paths.get(args[0]);
 
             extractSpecs(specFile);
-        } else if (argsIn.length == 2) {
+        } else if (args.length == 2) {
             // Generate yaml and java -- rule //:kcc_java_genned
-            var specFile = Paths.get(argsIn[0]);
-            var out = Paths.get(argsIn[1]);
+            var specFile = Paths.get(args[0]);
+            var out = Paths.get(args[1]);
 
             extractSpecs(specFile);
 
@@ -49,7 +51,7 @@ public class SourceGenFromSpec {
             generateSourceInDir(specFile, out, outputDir);
         } else {
             throw new IllegalArgumentException("Invalid number of arguments. " +
-                    "Expected 1 or 2, got " + argsIn.length);
+                    "Expected 1 or 2, got " + args.length);
         }
     }
 
@@ -63,19 +65,21 @@ public class SourceGenFromSpec {
      * @throws RuntimeException If any error arises during the writing process.
      */
     private static void generateSourceInDir(Path specFile, Path out, Path outputDir) throws IOException, RuntimeException {
-        var args = List.of(
-                "generate",
-                "-i", specFile.toAbsolutePath().toString(),
-                "-l", MyCodegen.class.getCanonicalName(),
-                "-o", outputDir.toAbsolutePath().toString(),
-                "--model-package", "source-gen",
-                "--additional-properties", "java8=true", "hideGenerationTimestamp=true",
-                "notNullJacksonAnnotation=true",
-                "--type-mappings",
-                V1ObjectMeta.class.getSimpleName() + "=" + V1ObjectMeta.class.getCanonicalName()
-        );
+        Map<String, Object> config = HashMap.of(
+                "inputSpecURL", specFile.toAbsolutePath().toString(),
+                "lang", MyCodegen.class.getCanonicalName(),
+                "outputDir", outputDir.toAbsolutePath().toString(),
+                "modelPackage", "kccapi",
+                "additionalProperties", (Object) (HashMap.of("java8", true, "hideGenerationTimestamp", true, "notNullJacksonAnnotation", true)).toJavaMap(),
+                "typeMappings", (HashMap.of(V1ObjectMeta.class.getSimpleName(), V1ObjectMeta.class.getCanonicalName())).toJavaMap()
+        ).toJavaMap();
 
-        SwaggerCodegen.main(args.toJavaArray(String[]::new));
+
+        String absolute = SourceGeneratorHelper.createConfigFile(config);
+
+        CodegenConfigurator configurator = CodegenConfigurator.fromFile(absolute);
+        final ClientOptInput clientOptInput = configurator.toClientOptInput();
+        new DefaultGenerator().opts(clientOptInput).generate();
 
         SourceGeneratorHelper.writeJarToOutput(out, outputDir);
     }
@@ -119,4 +123,5 @@ public class SourceGenFromSpec {
 
         Files.writeString(specFile, yaml.dump(VavrHelpers.deepToJava(openapiSpecs, List.empty(), HashSet.of(String.class))));
     }
+
 }

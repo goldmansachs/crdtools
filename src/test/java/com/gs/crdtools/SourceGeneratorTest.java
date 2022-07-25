@@ -1,15 +1,26 @@
 package com.gs.crdtools;
 
+import io.vavr.collection.HashMap;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Map;
 
-
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * These tests check that the bazel commands generate the expected files.
+ * Only run these after having run the specific bazel rules:
+ * - bazel build //:kcc_java_genned
+ * - bazel build //:spec
+ */
 public class SourceGeneratorTest {
 
     private static String finalPath;
@@ -81,4 +92,42 @@ public class SourceGeneratorTest {
             assertTrue(filepath.exists());
         }
     }
+
+    /**
+     * Test that the all-specs.yaml file has been generated successfully.
+     * @throws IOException If the file cannot be read.
+     */
+    @Test
+    @DisplayName("Test that the config.json file is generated successfully.")
+    void testConfigFileGeneration() throws IOException {
+        File specFile = new File("pet.yaml");
+        File specFilePath = specFile.getAbsoluteFile();
+
+        Map<String, Object> dummyConfigs = HashMap.of(
+                "inputSpecURL", specFilePath,
+                "lang", "java",
+                "modelPackage", "petStore",
+                "additionalProperties", (Object) (HashMap.of("java8", true, "hideGenerationTimestamp", true, "notNullJacksonAnnotation", true)).toJavaMap()
+        ).toJavaMap();
+
+        String absolute = SourceGeneratorHelper.createConfigFile(dummyConfigs);
+        File filepath = new File(absolute);
+        assertTrue(filepath.exists());
+    }
+
+    /**
+     * In order to make this work it is necessary to hardcode the two paths.
+     * This is because bazel test creates a sandbox environment around each test,
+     * this does not happen using bazel run instead.
+     * @throws IOException If any of the files cannot be read.
+     */
+    @Test
+    @DisplayName("Test that the generated code is valid")
+    void testGeneratedCode() throws IOException {
+        Path generatedCode = Path.of("/home/alfredo/Documents/MyContributionGS/crdtools/src/test/resources/AccessContextManagerAccessLevelCorrect.txt");
+        Path correctCode = Path.of("/home/alfredo/Documents/MyContributionGS/crdtools/src/test/resources/AccessContextManagerAccessLevelGenerated.txt");
+
+        assertEquals(-1, Files.mismatch(generatedCode, correctCode));
+    }
+
 }

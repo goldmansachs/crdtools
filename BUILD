@@ -1,5 +1,3 @@
-# This file exists so that the intellij Bazel plugin has something to bootstrap the project from
-
 alias(
     name = "spec",
     actual = "//src/main/java/com/gs/crdtools:spec",
