@@ -46,22 +46,9 @@ public class SourceGeneratorHelper {
                     }
                 }
             });
+        } finally {
+            jarOut.close();
         }
     }
 
-    /**
-     * Generate a json file with the configurations for the CodegenConfigurator object.
-     * Settings must match exactly the fields' names in the CodegenConfigurator class.
-     * @param config A map containing the configuration settings.
-     * @return Absolute path to the generated json file.
-     * @throws IOException If the file is not found.
-     */
-    static String createConfigFile(Map<String, Object> config) throws IOException {
-        File file = new File("config.json");
-        String absolute = file.getAbsolutePath();
-        ObjectMapper mapper = new ObjectMapper();
-        ObjectWriter writer = mapper.writer(new DefaultPrettyPrinter());
-        writer.writeValue(Paths.get(absolute).toFile(), config);
-        return absolute;
-    }
 }
