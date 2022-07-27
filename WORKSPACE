@@ -46,6 +46,9 @@ maven_install(
         "io.swagger.parser.v3:swagger-parser-v3:2.1.1",
         "io.swagger.core.v3:swagger-models:2.2.1",
     ],
+    # The rules_jvm_external, when adding the swagger dependencies, downloads
+    # a version of atlassian that comes under a different name. This is a
+    # workaround to be able to build the project.
     override_targets = {
         "com_atlassian_commonmark_commonmark" : "org_commonmark_commonmark",
     },

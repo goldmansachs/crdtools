@@ -4,7 +4,3 @@ bazel-out
 bazel-bin
 bazel-testlogs
 .idea
-*.iml
-expanded_external_deps.bzl
-external_deps.bzl
-src/test/java/com/gs/crdtools/SourceGeneratorTest.java

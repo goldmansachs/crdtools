@@ -1,21 +1,13 @@
 package com.gs.crdtools;
 
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Map;
 import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
 
 /**
- * A helper class to help with the generation of source code given an all-specs.yaml file
- * and an output file.
+ * A helper class to help with the generation of source code given some OpenAPIV3 specifications.
  */
 public class SourceGeneratorHelper {
 
@@ -27,11 +19,11 @@ public class SourceGeneratorHelper {
      * @throws RuntimeException If any issues occur while copying the content.
      */
     static void writeJarToOutput(Path out, Path outputDir) throws IOException, RuntimeException {
-        var jarOut = new JarOutputStream(Files.newOutputStream(out));
-        var root = outputDir.resolve("src/main/java/kccapi");
+        var root = outputDir.resolve("src/main/java/kccapi"); // NB: sorted for stable output
 
         // try with resources is used to close the jarOut stream when the block is exited
-        try (var stream = Files.walk(root).sorted()) { // NB: sorted for stable output
+        try (var jarOut = new JarOutputStream(Files.newOutputStream(out));
+             var stream = Files.walk(root).sorted()) {
             stream.forEach(p -> {
                 if (Files.isRegularFile(p) && p.toString().endsWith(".java")) {
                     var path = root.relativize(p).toString();
@@ -49,19 +41,4 @@ public class SourceGeneratorHelper {
         }
     }
 
-    /**
-     * Generate a json file with the configurations for the CodegenConfigurator object.
-     * Settings must match exactly the fields' names in the CodegenConfigurator class.
-     * @param config A map containing the configuration settings.
-     * @return Absolute path to the generated json file.
-     * @throws IOException If the file is not found.
-     */
-    static String createConfigFile(Map<String, Object> config) throws IOException {
-        File file = new File("config.json");
-        String absolute = file.getAbsolutePath();
-        ObjectMapper mapper = new ObjectMapper();
-        ObjectWriter writer = mapper.writer(new DefaultPrettyPrinter());
-        writer.writeValue(Paths.get(absolute).toFile(), config);
-        return absolute;
-    }
 }

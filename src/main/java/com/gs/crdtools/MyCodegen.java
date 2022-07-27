@@ -66,4 +66,3 @@ public class MyCodegen extends SpringCodegen {
         return toGetter(name);
     }
 }
-

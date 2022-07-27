@@ -1,3 +1,4 @@
+# This is an example of OpenAPI YAML data from https://github.com/swagger-api/swagger-codegen/blob/master/samples/yaml/pet.yml
 apiVersion: 1.0.0
 swaggerVersion: "1.2"
 basePath: "http://localhost:8002/api"

@@ -8,7 +8,7 @@ import io.vavr.collection.Map;
 import org.yaml.snakeyaml.Yaml;
 
 /**
- * A helper class to extract the openAPI specs from a given yaml file.
+ * A helper class to extract the openAPI specs from a given yaml file in the format of a string.
  */
 public class SpecExtractorHelper {
 

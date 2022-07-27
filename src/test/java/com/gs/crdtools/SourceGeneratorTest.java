@@ -1,6 +1,5 @@
 package com.gs.crdtools;
 
-import io.vavr.collection.HashMap;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -10,7 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Map;
+import com.google.devtools.build.runfiles.Runfiles;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -93,27 +92,6 @@ public class SourceGeneratorTest {
         }
     }
 
-    /**
-     * Test that the all-specs.yaml file has been generated successfully.
-     * @throws IOException If the file cannot be read.
-     */
-    @Test
-    @DisplayName("Test that the config.json file is generated successfully.")
-    void testConfigFileGeneration() throws IOException {
-        File specFile = new File("pet.yaml");
-        File specFilePath = specFile.getAbsoluteFile();
-
-        Map<String, Object> dummyConfigs = HashMap.of(
-                "inputSpecURL", specFilePath,
-                "lang", "java",
-                "modelPackage", "petStore",
-                "additionalProperties", (Object) (HashMap.of("java8", true, "hideGenerationTimestamp", true, "notNullJacksonAnnotation", true)).toJavaMap()
-        ).toJavaMap();
-
-        String absolute = SourceGeneratorHelper.createConfigFile(dummyConfigs);
-        File filepath = new File(absolute);
-        assertTrue(filepath.exists());
-    }
 
     /**
      * In order to make this work it is necessary to hardcode the two paths.
@@ -124,8 +102,10 @@ public class SourceGeneratorTest {
     @Test
     @DisplayName("Test that the generated code is valid")
     void testGeneratedCode() throws IOException {
-        Path generatedCode = Path.of("/home/alfredo/Documents/MyContributionGS/crdtools/src/test/resources/AccessContextManagerAccessLevelCorrect.txt");
-        Path correctCode = Path.of("/home/alfredo/Documents/MyContributionGS/crdtools/src/test/resources/AccessContextManagerAccessLevelGenerated.txt");
+        var runFiles = Runfiles.create();
+
+        Path generatedCode = Path.of(runFiles.rlocation("__main__/src/test/resources/AccessContextManagerAccessLevelCorrect.txt"));
+        Path correctCode = Path.of(runFiles.rlocation("__main__/src/test/resources/AccessContextManagerAccessLevelGenerated.txt"));
 
         assertEquals(-1, Files.mismatch(generatedCode, correctCode));
     }

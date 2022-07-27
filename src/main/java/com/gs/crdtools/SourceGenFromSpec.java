@@ -1,7 +1,6 @@
 package com.gs.crdtools;
 
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
-import io.swagger.codegen.v3.ClientOptInput;
 import io.swagger.codegen.v3.DefaultGenerator;
 import io.swagger.codegen.v3.config.CodegenConfigurator;
 import io.vavr.collection.HashMap;
@@ -17,80 +16,72 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 
+
 /**
- * This class is used to generate the source code from the OpenAPI specs.
- * It can be run using the following bazel rules:
- * - bazel build //:spec (for the all-specs-only.yaml file)
- * - bazel build //:kcc_java_genned for the source code generation.
+ * This class is used to generate POJO(s) from the given OpenAPIV3 specifications.
+ * It can be run using the following bazel rule:
+ * - bazel build //:kcc_java_genned.
  */
 public class SourceGenFromSpec {
 
     /**
-     * Generate the all-specs.yaml file or the complete source code, according
-     * to the number of parameters given:
-     * 1 - generate the all-specs-only.yaml file
-     * 2 - generate the complete source code from the spec file.
-     * @param argsIn The all-specs.yaml and genned.srcjar locations.
+     * Generate POJOs from the given OpenAPIV3 specifications and write them to the given path.
+     * @param args The genned.srcjar location, that is, the path where the generated POJOs will be written.
      * @throws IOException If any error occurs while loading the given paths.
-     * @throws IllegalArgumentException If the number of arguments is not 1 or 2.
+     * @throws IllegalArgumentException If the number of arguments is not 1.
      */
-    public static void main(String[] argsIn) throws IllegalArgumentException, IOException {
-        if (argsIn.length == 1) {
-            // Generate  yaml only -- rule //:spec
-            var specFile = Paths.get(argsIn[0]);
-
-            extractSpecs(specFile);
-        } else if (argsIn.length == 2) {
-            // Generate yaml and java -- rule //:kcc_java_genned
-            var specFile = Paths.get(argsIn[0]);
-            var out = Paths.get(argsIn[1]);
-
-            extractSpecs(specFile);
-
+    public static void main(String[] args) throws IllegalArgumentException, IOException {
+        if (args.length == 1) {
+            var outputPath = Paths.get(args[0]);
+            var openApiSpecs = extractSpecs();
             var outputDir = Files.createTempDirectory("openAPIGen");
-            generateSourceInDir(specFile, out, outputDir);
+            generateSourceInDir(openApiSpecs, outputPath, outputDir);
         } else {
-            throw new IllegalArgumentException("Invalid number of arguments. " +
-                    "Expected 1 or 2, got " + argsIn.length);
+            throw new IllegalArgumentException("Invalid number of arguments. Expected 1, got " + args.length);
         }
     }
 
     /**
-     * Generate source code from the given spec file to a temporary directory (outputDir),
-     * then write the contents of the temporary directory to the given out Path.
-     * @param specFile The spec file to generate source code from.
+     * Generate POJOs from a given OpenAPIV3 specification string in a given directory.
+     * @param specs The OpenAPIV3 specification yaml file in the form of a string.
      * @param out The output path.
      * @param outputDir The temporary directory to write the generated source code to.
      * @throws IOException If any error occurs while loading the given paths.
-     * @throws RuntimeException If any error arises during the writing process.
      */
-    private static void generateSourceInDir(Path specFile, Path out, Path outputDir) throws IOException, RuntimeException {
-        Map<String, Object> config = HashMap.of(
-                "inputSpecURL", specFile.toAbsolutePath().toString(),
-                "lang", MyCodegen.class.getCanonicalName(),
-                "outputDir", outputDir.toAbsolutePath().toString(),
-                "modelPackage", "kccapi",
-                "additionalProperties", (Object) (HashMap.of("java8", true, "hideGenerationTimestamp", true, "notNullJacksonAnnotation", true)).toJavaMap(),
-                "typeMappings", (HashMap.of(V1ObjectMeta.class.getSimpleName(), V1ObjectMeta.class.getCanonicalName())).toJavaMap()
-        ).toJavaMap();
+    private static void generateSourceInDir(String specs, Path out, Path outputDir) throws IOException {
+        var cc = new CodegenConfigurator()
+                .setInputSpec(specs)
+                .setLang(MyCodegen.class.getCanonicalName())
+                .setOutputDir(outputDir.toAbsolutePath().toString())
+                .setModelPackage("kccapi")
+                // CodegenConfigurator modifies its Map arguments, so we need to wrap it in something mutable
+                .setAdditionalProperties(mutable(Map.of(
+                    "java8", true,
+                    "hideGenerationTimestamp", true,
+                    "notNullJacksonAnnotation", true
+                )))
+                .setTypeMappings(mutable(Map.of(
+                        V1ObjectMeta.class.getSimpleName(), V1ObjectMeta.class.getCanonicalName()))
+                );
 
-
-        String absolute = SourceGeneratorHelper.createConfigFile(config);
-
-        CodegenConfigurator configurator = CodegenConfigurator.fromFile(absolute);
-        final ClientOptInput clientOptInput = configurator.toClientOptInput();
-        new DefaultGenerator().opts(clientOptInput).generate();
+        new DefaultGenerator().opts(cc.toClientOptInput()).generate();
 
         SourceGeneratorHelper.writeJarToOutput(out, outputDir);
     }
 
     /**
-     * Extract all CRD definitions and pull out the openapi specs according to these.
-     * Finally, write the specs to the specFile (yaml file).
-     * @param specFile The path to the final spec file location.
-     * @throws IOException If the k8s-config-connector has not been downloaded.
+     * Copy the keys and values from inner into a mutable Map and return it.
+     * @param inner The map to copy.
      */
-    private static void extractSpecs(Path specFile) throws IOException {
+    private static <K, V> Map<K, V> mutable(Map<K, V> inner) {
+        return new java.util.HashMap<>(inner);
+    }
+
+    /**
+     * Extract the OpenAPIV3 specs from a yaml file containing all CRD(s) objects.
+     * Return the specs as a string.
+     */
+    private static String extractSpecs() {
         List<Object> allTheYamls = SpecExtractorHelper.getCrdsYaml();
 
         var metadataSpec = HashMap.of("type", V1ObjectMeta.class.getSimpleName());
@@ -107,21 +98,19 @@ public class SourceGenFromSpec {
                 "components", HashMap.of("schemas", onlySpecs)
         );
 
-        writeSpecsToFile(specFile, full);
+        return writeSpecsToString(full);
     }
 
     /**
-     * Write the openapi specs to the given file (specFile).
-     * @param specFile The resulting yaml file containing the openapi specs.
+     * Write the OpenApiV3 specs to a string and return it.
      * @param openapiSpecs A map containing the openapi specs.
-     * @throws IOException If any error occurs while writing the file.
      */
-    private static void writeSpecsToFile(Path specFile, HashMap<String, Serializable> openapiSpecs) throws IOException {
+    private static String writeSpecsToString(HashMap<String, Serializable> openapiSpecs) {
         var dumperOptions = new DumperOptions();
         dumperOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
         var yaml = new Yaml(dumperOptions);
 
-        Files.writeString(specFile, yaml.dump(VavrHelpers.deepToJava(openapiSpecs, List.empty(), HashSet.of(String.class))));
+        return yaml.dump(VavrHelpers.deepToJava(openapiSpecs, List.empty(), HashSet.of(String.class)));
     }
 
 }
