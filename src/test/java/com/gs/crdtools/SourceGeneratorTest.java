@@ -94,27 +94,6 @@ public class SourceGeneratorTest {
         }
     }
 
-    /**
-     * Test that the all-specs.yaml file has been generated successfully.
-     * @throws IOException If the file cannot be read.
-     */
-    @Test
-    @DisplayName("Test that the config.json file is generated successfully.")
-    void testConfigFileGeneration() throws IOException {
-        File specFile = new File("pet.yaml");
-        File specFilePath = specFile.getAbsoluteFile();
-
-        Map<String, Object> dummyConfigs = HashMap.of(
-                "inputSpecURL", specFilePath,
-                "lang", "java",
-                "modelPackage", "petStore",
-                "additionalProperties", (Object) (HashMap.of("java8", true, "hideGenerationTimestamp", true, "notNullJacksonAnnotation", true)).toJavaMap()
-        ).toJavaMap();
-
-        String absolute = SourceGeneratorHelper.createConfigFile(dummyConfigs);
-        File filepath = new File(absolute);
-        assertTrue(filepath.exists());
-    }
 
     /**
      * In order to make this work it is necessary to hardcode the two paths.
