@@ -16,7 +16,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 
-
 /**
  * This class is used to generate POJO(s) from the given OpenAPIV3 specifications.
  * It can be run using the following bazel rule:
