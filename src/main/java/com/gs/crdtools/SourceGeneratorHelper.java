@@ -14,8 +14,7 @@ import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
 
 /**
- * A helper class to help with the generation of source code given an all-specs.yaml file
- * and an output file.
+ * A helper class to help with the generation of source code given some OpenAPIV3 specifications.
  */
 public class SourceGeneratorHelper {
 
@@ -27,11 +26,11 @@ public class SourceGeneratorHelper {
      * @throws RuntimeException If any issues occur while copying the content.
      */
     static void writeJarToOutput(Path out, Path outputDir) throws IOException, RuntimeException {
-        var jarOut = new JarOutputStream(Files.newOutputStream(out));
-        var root = outputDir.resolve("src/main/java/kccapi");
+        var root = outputDir.resolve("src/main/java/kccapi"); // NB: sorted for stable output
 
         // try with resources is used to close the jarOut stream when the block is exited
-        try (var stream = Files.walk(root).sorted()) { // NB: sorted for stable output
+        try (var jarOut = new JarOutputStream(Files.newOutputStream(out));
+             var stream = Files.walk(root).sorted()) {
             stream.forEach(p -> {
                 if (Files.isRegularFile(p) && p.toString().endsWith(".java")) {
                     var path = root.relativize(p).toString();
@@ -46,8 +45,6 @@ public class SourceGeneratorHelper {
                     }
                 }
             });
-        } finally {
-            jarOut.close();
         }
     }
 

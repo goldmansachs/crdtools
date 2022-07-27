@@ -74,21 +74,12 @@ java_binary(
 )
 
 genrule(
-    name = "spec",
-    outs = ["all-specs-only.yaml"],
-    visibility = ["//visibility:public"],
-    cmd = "$(location gen-source-from-spec) \"$@\"",
-    tools = ["gen-source-from-spec"],
-)
-
-genrule(
     name = "kcc-java-genned",
     outs = [
-        "all-specs.yaml",
         "genned.srcjar",
     ],
     visibility = ["//visibility:public"],
-    cmd = "$(location gen-source-from-spec) $(location all-specs.yaml) $(location genned.srcjar)",
+    cmd = "$(location gen-source-from-spec) $(location genned.srcjar)",
     tools = [
         "gen-source-from-spec",
     ],
