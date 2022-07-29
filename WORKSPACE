@@ -45,6 +45,7 @@ maven_install(
         "io.swagger.codegen.v3:swagger-codegen-generators:1.0.34",
         "io.swagger.parser.v3:swagger-parser-v3:2.1.1",
         "io.swagger.core.v3:swagger-models:2.2.1",
+        "com.github.jknack:handlebars:4.3.0",
     ],
     # The rules_jvm_external, when adding the swagger dependencies, downloads
     # a version of atlassian that comes under a different name. This is a

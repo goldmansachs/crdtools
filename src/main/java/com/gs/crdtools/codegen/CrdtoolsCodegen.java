@@ -1,15 +1,22 @@
-package com.gs.crdtools;
+package com.gs.crdtools.codegen;
 
+import com.gs.crdtools.BaseObject;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.swagger.codegen.v3.CodegenModel;
+import io.swagger.codegen.v3.CodegenProperty;
 import io.swagger.codegen.v3.generators.java.SpringCodegen;
 import io.swagger.v3.oas.models.media.Schema;
 import io.vavr.collection.List;
 
 /**
- * This class defines the specific implementation of the CodeGenerator.
+ * An extension of SpringCodegen with some custom functionality.
  */
-public class MyCodegen extends SpringCodegen {
+public class CrdtoolsCodegen extends SpringCodegen {
+    @Override
+    public void processOpts() {
+        super.processOpts();
+        templateEngine = new CustomOverrideTemplateEngine(this);
+    }
 
     /**
      * Create a new instance of a model from existing schemas.
