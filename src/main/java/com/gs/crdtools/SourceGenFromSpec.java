@@ -67,6 +67,7 @@ public class SourceGenFromSpec {
         new DefaultGenerator().opts(cc.toClientOptInput()).generate();
 
         SourceGeneratorHelper.writeJarToOutput(out, tmpOutputDir);
+        Utils.deleteDirectory(tmpOutputDir);
     }
 
     /**
