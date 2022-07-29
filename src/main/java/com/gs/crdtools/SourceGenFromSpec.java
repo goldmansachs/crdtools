@@ -32,7 +32,10 @@ public class SourceGenFromSpec {
     public static void main(String[] args) throws IllegalArgumentException, IOException {
         if (args.length == 1) {
             var outputPath = Paths.get(args[0]);
-            var openApiSpecs = extractSpecs();
+
+            List<Object> allTheYamls = SpecExtractorHelper.getCrdsYaml();
+            var openApiSpecs = extractSpecs(allTheYamls);
+
             generateSourceCodeFromSpecs(openApiSpecs, outputPath);
         } else {
             throw new IllegalArgumentException("Invalid number of arguments. Expected 1, got " + args.length);
@@ -78,16 +81,15 @@ public class SourceGenFromSpec {
     }
 
     /**
-     * Extract the OpenAPIV3 specs from a yaml file containing all CRD(s) objects.
-     * Return the specs as a string.
+     * Extract the OpenAPIV3 specs from a list of CRDs objects extracted from a previous yaml file,
+     * then returns the specs as a string.
+     * @param crdsYaml The list of CRDs objects.
      */
-    private static String extractSpecs() {
-        List<Object> allTheYamls = SpecExtractorHelper.getCrdsYaml();
-
+    private static String extractSpecs(List<Object> crdsYaml) {
         var metadataSpec = HashMap.of("type", V1ObjectMeta.class.getSimpleName());
 
         // Now just pull out the openapi specs
-        HashMap<Object, HashMap<String, Object>> onlySpecs = SpecExtractorHelper.pullOpenapiSpecs(allTheYamls, metadataSpec);
+        HashMap<Object, HashMap<String, Object>> onlySpecs = SpecExtractorHelper.pullOpenapiSpecs(crdsYaml, metadataSpec);
 
         var full = HashMap.of(
                 "openapi", "3.0.0",
