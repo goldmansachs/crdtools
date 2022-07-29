@@ -9,11 +9,13 @@ import io.vavr.collection.List;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Comparator;
 import java.util.Map;
 
 /**
@@ -67,7 +69,7 @@ public class SourceGenFromSpec {
         new DefaultGenerator().opts(cc.toClientOptInput()).generate();
 
         SourceGeneratorHelper.writeJarToOutput(out, tmpOutputDir);
-        Utils.deleteDirectory(tmpOutputDir);
+        deleteDirectory(tmpOutputDir);
     }
 
     /**
@@ -114,4 +116,17 @@ public class SourceGenFromSpec {
         return yaml.dump(VavrHelpers.deepToJava(openapiSpecs, List.empty(), HashSet.of(String.class)));
     }
 
+    /**
+     * Delete the specified directory and all its contents.
+     * @param path The path to the directory to delete.
+     * @throws IOException If the directory is not found at the path.
+     */
+    private static void deleteDirectory(Path path) throws IOException {
+        try (var folder = Files.walk(path)) {
+            // we use comparator reverse order to delete the deepest files first
+            folder.sorted(Comparator.reverseOrder())
+                    .map(Path::toFile)
+                    .forEach(File::delete);
+        }
+    }
 }

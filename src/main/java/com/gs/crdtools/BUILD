@@ -66,7 +66,6 @@ java_binary(
         "//src/main/java/com/gs/crdtools:vavr-helpers",
         "//src/main/java/com/gs/crdtools:swagger-codegen",
         "//src/main/java/com/gs/crdtools:openapi-src-genner",
-        "//src/main/java/com/gs/crdtools:utils",
         "@maven//:io_swagger_codegen_v3_swagger_codegen",
         "@maven//:io_kubernetes_client_java_api",
         "@maven//:io_vavr_vavr",
@@ -84,10 +83,4 @@ genrule(
     tools = [
         "gen-source-from-spec",
     ],
-)
-
-java_library(
-    name = "utils",
-    srcs = ["Utils.java"],
-    visibility = ["//visibility:public"],
 )
