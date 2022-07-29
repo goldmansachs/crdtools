@@ -1,5 +1,6 @@
 package com.gs.crdtools;
 
+import com.gs.crdtools.codegen.CrdtoolsCodegen;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.swagger.codegen.v3.DefaultGenerator;
 import io.swagger.codegen.v3.config.CodegenConfigurator;
@@ -49,12 +50,12 @@ public class SourceGenFromSpec {
      * @param out The output path.
      * @throws IOException If any error occurs while loading the given paths.
      */
-    private static void generateSourceCodeFromSpecs(String specs, Path out) throws IOException {
+    public static void generateSourceCodeFromSpecs(String specs, Path out) throws IOException {
         var tmpOutputDir = Files.createTempDirectory("openAPIGen");
 
         var cc = new CodegenConfigurator()
                 .setInputSpec(specs)
-                .setLang(MyCodegen.class.getCanonicalName())
+                .setLang(CrdtoolsCodegen.class.getCanonicalName())
                 .setOutputDir(tmpOutputDir.toAbsolutePath().toString())
                 .setModelPackage("kccapi")
                 // CodegenConfigurator modifies its Map arguments, so we need to wrap it in something mutable
