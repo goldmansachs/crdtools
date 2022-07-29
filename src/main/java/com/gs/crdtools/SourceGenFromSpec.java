@@ -33,31 +33,32 @@ public class SourceGenFromSpec {
         if (args.length == 1) {
             var outputPath = Paths.get(args[0]);
             var openApiSpecs = extractSpecs();
-            var outputDir = Files.createTempDirectory("openAPIGen");
-            generateSourceInDir(openApiSpecs, outputPath, outputDir);
+            generateSourceCodeFromSpecs(openApiSpecs, outputPath);
         } else {
             throw new IllegalArgumentException("Invalid number of arguments. Expected 1, got " + args.length);
         }
     }
 
     /**
-     * Generate POJOs from a given OpenAPIV3 specification string in a given directory.
+     * Generate POJOs from a given OpenAPIV3 specification string and place them at the given path.
+     * The result is a collection of jar files zipped within a .srcjar file at the path provided.
      * @param specs The OpenAPIV3 specification yaml file in the form of a string.
      * @param out The output path.
-     * @param outputDir The temporary directory to write the generated source code to.
      * @throws IOException If any error occurs while loading the given paths.
      */
-    private static void generateSourceInDir(String specs, Path out, Path outputDir) throws IOException {
+    private static void generateSourceCodeFromSpecs(String specs, Path out) throws IOException {
+        var tmpOutputDir = Files.createTempDirectory("openAPIGen");
+
         var cc = new CodegenConfigurator()
                 .setInputSpec(specs)
                 .setLang(MyCodegen.class.getCanonicalName())
-                .setOutputDir(outputDir.toAbsolutePath().toString())
+                .setOutputDir(tmpOutputDir.toAbsolutePath().toString())
                 .setModelPackage("kccapi")
                 // CodegenConfigurator modifies its Map arguments, so we need to wrap it in something mutable
                 .setAdditionalProperties(mutable(Map.of(
-                    "java8", true,
-                    "hideGenerationTimestamp", true,
-                    "notNullJacksonAnnotation", true
+                        "java8", true,
+                        "hideGenerationTimestamp", true,
+                        "notNullJacksonAnnotation", true
                 )))
                 .setTypeMappings(mutable(Map.of(
                         V1ObjectMeta.class.getSimpleName(), V1ObjectMeta.class.getCanonicalName()))
@@ -65,7 +66,7 @@ public class SourceGenFromSpec {
 
         new DefaultGenerator().opts(cc.toClientOptInput()).generate();
 
-        SourceGeneratorHelper.writeJarToOutput(out, outputDir);
+        SourceGeneratorHelper.writeJarToOutput(out, tmpOutputDir);
     }
 
     /**
