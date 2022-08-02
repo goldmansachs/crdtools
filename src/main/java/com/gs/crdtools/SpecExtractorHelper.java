@@ -21,16 +21,13 @@ public class SpecExtractorHelper {
 
         return HashMap.ofEntries(allTheYamls.map(y -> {
             var kind = VavrHelpers.extractByPath(y, "spec", "names", "kind");
-            //noinspection unchecked
-            Map<String, Object> schema = HashMap.ofAll(
-                    ((java.util.Map<String, java.util.Map<String, java.util.List<java.util.Map<String,
-                            java.util.Map<String, java.util.Map<String, Object>>>>>>) y)
-                            .get("spec")
-                            .get("versions")
-                            .get(0)
-                            .get("schema")
-                            .get("openAPIV3Schema"));
 
+            // Get the latest version of the current CDR and read its openAPIV3Schema
+            var latestVersion = getLatestVersion(VavrHelpers.extractByPath(y, "spec", "versions"));
+            Map<String, Object> schema = HashMap.ofAll(
+                    (java.util.Map<String, Object>) ((java.util.Map<?, ?>) latestVersion
+                    .get("schema"))
+                    .get("openAPIV3Schema"));
 
             //noinspection unchecked
             var properties = (java.util.Map<String, Object>)schema.get("properties").get();
@@ -44,6 +41,23 @@ public class SpecExtractorHelper {
 
             return Tuple.of(kind, HashMap.of("type", (Object) "object").merge(schema));
         }));
+    }
+
+    /**
+     * Get the latest version of the current CDR.
+     * @param versions A list of all the versions (in the format of maps) of the current CDR.
+     * @return The latest version of the current CDR.
+     */
+    static java.util.Map<String, Object> getLatestVersion(java.util.List<Object> versions) {
+        for (var v : versions) {
+            //noinspection unchecked
+            boolean storage = (boolean) ((java.util.Map<String, Object>) v).get("storage");
+            if (storage) {
+                return (java.util.Map<String, Object>) v;
+            }
+        }
+
+        throw new IllegalStateException("No version found with storage=true");
     }
 
     private static java.util.Map<String, String> makeSpec(String qualifiedType) {
