@@ -19,10 +19,11 @@ public class Generator {
             throw new IllegalArgumentException("Usage: Generator GENERATED_SRC_ZIP CRD_YAML [CRD_YAML...]");
         }
         var crds = parseCrds(List.of(args).subSequence(1).map(Path::of));
-        generate(crds, Path.of(args[0]));
+        var result = generate(crds);
+        toZip(result, Path.of(args[0]));
     }
 
-    private static List<Object> parseCrds(List<Path> inputs) {
+    static List<Object> parseCrds(List<Path> inputs) {
         var parser = new Yaml();
 
         return inputs
@@ -36,9 +37,9 @@ public class Generator {
                 .flatMap(parser::loadAll);
     }
 
-    private static void generate(List<Object> crds, Path output) throws IOException {
+    static Map<Path, String> generate(List<Object> crds) throws IOException {
         var specs = SourceGenFromSpec.extractSpecs(crds);
-        toZip(SourceGenFromSpec.generateSourceCodeFromSpecs(specs), output);
+        return SourceGenFromSpec.generateSourceCodeFromSpecs(specs);
     }
 
 }
