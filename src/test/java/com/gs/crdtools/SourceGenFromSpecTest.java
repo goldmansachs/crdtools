@@ -1,7 +1,6 @@
 package com.gs.crdtools;
 
 import io.vavr.collection.HashMap;
-import io.vavr.collection.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -11,7 +10,6 @@ import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class SourceGenFromSpecTest {
 
@@ -35,53 +33,6 @@ public class SourceGenFromSpecTest {
             ),
             result
         );
-    }
-
-    @Test
-    void testGetLatestVersion() {
-        // dummy versions list, schema is missing, storage is set to true
-        // if two instances of storage=true exist, the first one is returned
-        java.util.List<?> versions = List.of(
-                HashMap.of(
-                        "name", "v2",
-                        "served", true,
-                        "storage", true,
-                        "schema", (Object) "object").toJavaMap(),
-                HashMap.of(
-                        "name", "v1",
-                        "served", true,
-                        "storage", false,
-                        "schema", (Object) "object").toJavaMap(),
-                HashMap.of(
-                        "name", "v1beta1",
-                        "served", true,
-                        "storage", false,
-                        "schema", (Object) "object").toJavaMap()
-        ).toJavaList();
-
-        assertEquals(versions.get(0), SpecExtractorHelper.getLatestVersion((java.util.List<Object>) versions));
-    }
-
-    @Test
-    void testGetLatestVersionThrowsError() {
-        // dummy versions list where storage is never true
-        java.util.List<?> versions = List.of(
-                HashMap.of(
-                        "name", "v1beta1",
-                        "served", true,
-                        "storage", false,
-                        "schema", (Object) "object").toJavaMap(),
-                HashMap.of(
-                        "name", "v1",
-                        "served", true,
-                        "storage", false,
-                        "schema", (Object) "object").toJavaMap()
-        ).toJavaList();
-
-        Exception exception = assertThrows(IllegalStateException.class,
-                () -> SpecExtractorHelper.getLatestVersion((java.util.List<Object>) versions));
-
-        assertTrue(exception.getMessage().contains("No version found with storage=true"));
     }
 
 }
