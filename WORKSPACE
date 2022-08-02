@@ -5,14 +5,20 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 ## External dependencies ##
 ###########################
 
-load("@bazel_tools//tools/build_defs/repo:git.bzl", "new_git_repository")
+load("@bazel_tools//tools/build_defs/repo:git.bzl", "new_git_repository", "git_repository")
 
 new_git_repository(
     name = "k8s-config-connector",
+    build_file_content = "exports_files(['install-bundles/install-bundle-workload-identity/crds.yaml'])",
     commit = "1c096d9a6382fb0b6e54901e5b618f6ee9d0282b",
     remote = "https://github.com/GoogleCloudPlatform/k8s-config-connector.git",
     shallow_since = "",
-    build_file_content = "exports_files(['install-bundles/install-bundle-workload-identity/crds.yaml'])"
+)
+
+git_repository(
+    name = "nryaml",
+    remote = "https://github.com/nresare/nryaml",
+    commit = "0c57aa3e0f549b96795c2af953cc98862a2df2af",
 )
 
 ###########################
@@ -50,13 +56,13 @@ maven_install(
         "javax.validation:validation-api:2.0.1.Final",
         "io.kubernetes:client-java-api:16.0.0",
     ],
+    fetch_sources = True,
     # The rules_jvm_external, when adding the swagger dependencies, downloads
     # a version of atlassian that comes under a different name. This is a
     # workaround to be able to build the project.
     override_targets = {
-        "com_atlassian_commonmark_commonmark" : "org_commonmark_commonmark",
+        "com_atlassian_commonmark_commonmark": "org_commonmark_commonmark",
     },
-    fetch_sources = True,
     repositories = [
         "https://repo1.maven.org/maven2",
     ],

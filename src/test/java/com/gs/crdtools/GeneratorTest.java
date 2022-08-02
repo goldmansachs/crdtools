@@ -19,7 +19,7 @@ public class GeneratorTest {
 
         var result = Generator.parseCrds(List.of(input));
         assertEquals(1, result.length());
-        assertEquals("stable.example.com", VavrHelpers.extractByPath(result.get(0), "spec", "group"));
+        assertEquals("stable.example.com", result.get(0).asMapping().get("spec").asMapping().get("group").asString());
     }
 
     @Test

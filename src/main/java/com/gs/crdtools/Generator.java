@@ -1,5 +1,7 @@
 package com.gs.crdtools;
 
+import com.resare.nryaml.YAMLUtil;
+import com.resare.nryaml.YAMLValue;
 import io.vavr.collection.List;
 import io.vavr.collection.Map;
 import org.yaml.snakeyaml.Yaml;
@@ -23,21 +25,13 @@ public class Generator {
         toZip(result, Path.of(args[0]));
     }
 
-    static List<Object> parseCrds(List<Path> inputs) {
+    static List<YAMLValue> parseCrds(List<Path> inputs) {
         var parser = new Yaml();
 
-        return inputs
-                .map(p -> {
-                    try {
-                        return Files.readString(p, StandardCharsets.UTF_8);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
-                .flatMap(parser::loadAll);
+        return inputs.flatMap(YAMLUtil::allFromPath);
     }
 
-    static Map<Path, String> generate(List<Object> crds) throws IOException {
+    static Map<Path, String> generate(List<YAMLValue> crds) throws IOException {
         var specs = SourceGenFromSpec.extractSpecs(crds);
         return SourceGenFromSpec.generateSourceCodeFromSpecs(specs);
     }
