@@ -75,30 +75,3 @@ java_binary(
         "@maven//:org_yaml_snakeyaml",
     ],
 )
-
-
-genrule(
-    name = "kcc-java-genned",
-    outs = [
-        "genned.srcjar",
-    ],
-    srcs = [
-        "//src/test/resources:test_crds"
-    ],
-    visibility = ["//visibility:public"],
-    cmd = "$(location generator) $(location genned.srcjar) $(locations //src/test/resources:test_crds)",
-    tools = ["generator"],
-)
-
-java_library(
-    name = "kccapi",
-    srcs = ["kcc-java-genned"],
-    deps = [
-        ":base-object",
-        "@maven//:com_fasterxml_jackson_core_jackson_annotations",
-        "@maven//:javax_validation_validation_api",
-        "//src/main/java/org/springframework/validation/annotation:validation-stub",
-        "@maven//:io_swagger_core_v3_swagger_annotations",
-        "@maven//:io_kubernetes_client_java_api",
-    ]
-)
