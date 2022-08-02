@@ -26,7 +26,7 @@ public class SourceGeneratorHelper {
      * @throws RuntimeException If any issues occur while copying the content.
      */
     static void writeJarToOutput(Path out, Path outputDir) throws IOException, RuntimeException {
-        var root = outputDir.resolve("src/main/java/kccapi"); // NB: sorted for stable output
+        var root = outputDir.resolve("src/main/java/com/gs/crdtools"); // NB: sorted for stable output
 
         // try with resources is used to close the jarOut stream when the block is exited
         try (var jarOut = new JarOutputStream(Files.newOutputStream(out));

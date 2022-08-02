@@ -15,11 +15,10 @@ public class SpecExtractorHelper {
     /**
      * Pull out the openapi specs according to the "kind" attribute in the inputted yaml file.
      * @param allTheYamls A list containing the previously extracted crds.
-     * @param metadataSpec The metadata spec to use for the openapi spec.
      * @return The extracted specs.
      */
-     static HashMap<Object, HashMap<String, Object>> pullOpenapiSpecs(List<Object> allTheYamls,
-                                                                             HashMap<String, String> metadataSpec) {
+     static HashMap<Object, HashMap<String, Object>> pullOpenapiSpecs(List<Object> allTheYamls) {
+
         return HashMap.ofEntries(allTheYamls.map(y -> {
             var kind = VavrHelpers.extractByPath(y, "spec", "names", "kind");
             //noinspection unchecked
@@ -32,12 +31,23 @@ public class SpecExtractorHelper {
                             .get("schema")
                             .get("openAPIV3Schema"));
 
-            // Splat on the metadata spec
+
             //noinspection unchecked
-            ((java.util.Map<String, Object>) schema.get("properties").get()).put("metadata", metadataSpec.toJavaMap());
+            var properties = (java.util.Map<String, Object>)schema.get("properties").get();
+            properties.put("metadata", makeSpec("V1ObjectMeta"));
+            if (!properties.containsKey("kind")) {
+             properties.put("kind", makeSpec("string"));
+            }
+            if (!properties.containsKey("apiVersion")) {
+             properties.put("apiVersion", makeSpec("string"));
+            }
 
             return Tuple.of(kind, HashMap.of("type", (Object) "object").merge(schema));
         }));
+    }
+
+    private static java.util.Map<String, String> makeSpec(String qualifiedType) {
+         return java.util.Map.of("type", qualifiedType);
     }
 
     /**
