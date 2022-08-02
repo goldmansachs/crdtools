@@ -9,6 +9,8 @@ java_junit5_test(
         "//src/main/java/com/gs/crdtools:spec-extractor",
         "//src/main/java/com/gs/crdtools:openapi-src-genner",
         "//src/main/java/com/gs/crdtools:gen-source-from-spec",
+        "//src/main/java/com/gs/crdtools:generator",
+        "//src/main/java/com/gs/crdtools:vavr-helpers",
         "//src/main/java/com/gs/crdtools/codegen:swagger-codegen-extensions",
         "@bazel_tools//tools/java/runfiles",
         "@maven//:io_vavr_vavr",
@@ -17,6 +19,7 @@ java_junit5_test(
     size = "small",
     data = [
         "//src/test/resources:all",
+        "//src/test/resources:test_crds",
     ],
 )
 

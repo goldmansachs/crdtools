@@ -61,6 +61,7 @@ java_binary(
 java_binary(
     name = "generator",
     srcs = ["Generator.java"],
+    visibility = ["//visibility:public"],
     main_class = "com.gs.crdtools.Generator",
     deps = [
         ":spec-extractor",
@@ -79,10 +80,10 @@ genrule(
         "genned.srcjar",
     ],
     srcs = [
-        "//src/test/resources:crds"
+        "//src/test/resources:test_crds"
     ],
     visibility = ["//visibility:public"],
-    cmd = "$(location generator) $(location genned.srcjar) $(locations //src/test/resources:crds)",
+    cmd = "$(location generator) $(location genned.srcjar) $(locations //src/test/resources:test_crds)",
     tools = ["generator"],
 )
 
