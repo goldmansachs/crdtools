@@ -1,6 +1,8 @@
 package com.gs.crdtools;
 
 import com.gs.crdtools.codegen.CrdtoolsCodegen;
+import com.resare.nryaml.YAMLUtil;
+import com.resare.nryaml.YAMLValue;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.swagger.codegen.v3.DefaultGenerator;
 import io.swagger.codegen.v3.config.CodegenConfigurator;
@@ -42,7 +44,7 @@ public class SourceGenFromSpec {
             var outputPath = Paths.get(args[0]);
 
             List<Object> allTheYamls = SpecExtractorHelper.getCrdsYaml();
-            var openApiSpecs = extractSpecs(allTheYamls);
+            var openApiSpecs = extractSpecs(allTheYamls.toStream().map(YAMLUtil::fromBare).toList());
 
             toZip(generateSourceCodeFromSpecs(openApiSpecs), outputPath);
 
@@ -143,7 +145,7 @@ public class SourceGenFromSpec {
      * then returns the specs as a string.
      * @param crdsYaml The list of CRDs objects.
      */
-    static String extractSpecs(List<Object> crdsYaml) {
+    static String extractSpecs(List<YAMLValue> crdsYaml) {
 
         // Now just pull out the openapi specs
         HashMap<Object, HashMap<String, Object>> onlySpecs = SpecExtractorHelper.pullOpenapiSpecs(crdsYaml);

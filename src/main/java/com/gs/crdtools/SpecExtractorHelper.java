@@ -1,5 +1,6 @@
 package com.gs.crdtools;
 
+import com.resare.nryaml.YAMLValue;
 import io.vavr.Tuple;
 import io.vavr.collection.HashMap;
 import io.vavr.collection.List;
@@ -17,9 +18,9 @@ public class SpecExtractorHelper {
      * @param allTheYamls A list containing the previously extracted crds.
      * @return The extracted specs.
      */
-     static HashMap<Object, HashMap<String, Object>> pullOpenapiSpecs(List<Object> allTheYamls) {
+     static HashMap<Object, HashMap<String, Object>> pullOpenapiSpecs(List<YAMLValue> allTheYamls) {
 
-        return HashMap.ofEntries(allTheYamls.map(y -> {
+        return HashMap.ofEntries(allTheYamls.map(YAMLValue::toBareObject).map(y -> {
             var kind = VavrHelpers.extractByPath(y, "spec", "names", "kind");
 
             // Get the latest version of the current CDR and read its openAPIV3Schema

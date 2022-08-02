@@ -12,6 +12,7 @@ java_library(
     resources = ["@k8s-config-connector//:install-bundles/install-bundle-workload-identity/crds.yaml"],
     deps = [
         "//src/main/java/com/gs/crdtools:vavr-helpers",
+        "@nryaml//:nryaml",
         "@maven//:io_vavr_vavr",
         "@maven//:org_yaml_snakeyaml",
     ],
@@ -55,6 +56,7 @@ java_binary(
         "@maven//:io_kubernetes_client_java_api",
         "@maven//:io_vavr_vavr",
         "@maven//:org_yaml_snakeyaml",
+        "@nryaml//:nryaml",
     ],
 )
 
@@ -66,6 +68,7 @@ java_binary(
     deps = [
         ":spec-extractor",
         ":gen-source-from-spec",
+        "@nryaml//:nryaml",
         "//src/main/java/com/gs/crdtools/codegen:swagger-codegen-extensions",
         "//src/main/java/com/gs/crdtools:openapi-src-genner",
         "@maven//:io_vavr_vavr",
