@@ -1,11 +1,11 @@
 package com.gs.crdtools;
 
+import com.resare.nryaml.YAMLMapping;
+import com.resare.nryaml.YAMLSequence;
 import com.resare.nryaml.YAMLValue;
 import io.vavr.Tuple;
 import io.vavr.collection.HashMap;
 import io.vavr.collection.List;
-import io.vavr.collection.Map;
-
 import org.yaml.snakeyaml.Yaml;
 
 /**
@@ -20,18 +20,19 @@ public class SpecExtractorHelper {
      */
      static HashMap<Object, HashMap<String, Object>> pullOpenapiSpecs(List<YAMLValue> allTheYamls) {
 
-        return HashMap.ofEntries(allTheYamls.map(YAMLValue::toBareObject).map(y -> {
-            var kind = VavrHelpers.extractByPath(y, "spec", "names", "kind");
+        return HashMap.ofEntries(allTheYamls.map(y -> {
+            var kind = y.asMapping().get("spec")
+                    .asMapping().get("names")
+                    .asMapping().get("kind")
+                    .asString();
 
             // Get the latest version of the current CDR and read its openAPIV3Schema
-            var latestVersion = getLatestVersion(VavrHelpers.extractByPath(y, "spec", "versions"));
-            Map<String, Object> schema = HashMap.ofAll(
-                    (java.util.Map<String, Object>) ((java.util.Map<?, ?>) latestVersion
-                    .get("schema"))
-                    .get("openAPIV3Schema"));
+            var latestVersion = getLatestVersion(y.asMapping().get("spec").asMapping().get("versions").asSequence());
+            var schema = latestVersion.get("schema").asMapping().get("openAPIV3Schema").asMapping();
 
             //noinspection unchecked
-            var properties = (java.util.Map<String, Object>)schema.get("properties").get();
+            var properties = (java.util.Map)schema.get("properties").asMapping().toBareObject();
+
             properties.put("metadata", makeSpec("V1ObjectMeta"));
             if (!properties.containsKey("kind")) {
              properties.put("kind", makeSpec("string"));
@@ -40,7 +41,9 @@ public class SpecExtractorHelper {
              properties.put("apiVersion", makeSpec("string"));
             }
 
-            return Tuple.of(kind, HashMap.of("type", (Object) "object").merge(schema));
+            var bareSchema = io.vavr.collection.HashMap.ofAll((java.util.Map<String,Object>)schema.toBareObject());
+            bareSchema = bareSchema.put("properties", properties);
+            return Tuple.of(kind, HashMap.of("type", (Object) "object").merge(bareSchema));
         }));
     }
 
@@ -49,12 +52,10 @@ public class SpecExtractorHelper {
      * @param versions A list of all the versions (in the format of maps) of the current CDR.
      * @return The latest version of the current CDR.
      */
-    static java.util.Map<String, Object> getLatestVersion(java.util.List<Object> versions) {
-        for (var v : versions) {
-            //noinspection unchecked
-            boolean storage = (boolean) ((java.util.Map<String, Object>) v).get("storage");
-            if (storage) {
-                return (java.util.Map<String, Object>) v;
+    static YAMLMapping getLatestVersion(YAMLSequence versions) {
+        for (var v : versions.stream().map(YAMLValue::asMapping).toList()) {
+            if (v.asMapping().get("storage").asBoolean()) {
+                return v;
             }
         }
 
@@ -62,7 +63,7 @@ public class SpecExtractorHelper {
     }
 
     private static java.util.Map<String, String> makeSpec(String qualifiedType) {
-         return java.util.Map.of("type", qualifiedType);
+         return HashMap.of("type", qualifiedType).toJavaMap();
     }
 
     /**

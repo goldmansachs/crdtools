@@ -1,6 +1,7 @@
 package com.gs.crdtools;
 
 import com.google.devtools.build.runfiles.Runfiles;
+import com.resare.nryaml.YAMLUtil;
 import io.vavr.collection.HashMap;
 import io.vavr.collection.List;
 import org.junit.jupiter.api.Test;
@@ -33,7 +34,7 @@ public class SpecExtractorHelperTest {
     void testGetLatestVersion() {
         // dummy versions list, schema is missing, storage is set to true
         // if two instances of storage=true exist, the first one is returned
-        java.util.List<?> versions = List.of(
+        var versions = YAMLUtil.fromBare(List.of(
                 HashMap.of(
                         "name", "v2",
                         "served", true,
@@ -49,15 +50,15 @@ public class SpecExtractorHelperTest {
                         "served", true,
                         "storage", false,
                         "schema", (Object) "object").toJavaMap()
-        ).toJavaList();
+        ).toJavaList()).asSequence();
 
-        assertEquals(versions.get(0), SpecExtractorHelper.getLatestVersion((java.util.List<Object>) versions));
+        assertEquals(versions.get(0).asMapping(), SpecExtractorHelper.getLatestVersion(versions));
     }
 
     @Test
     void testGetLatestVersionThrowsError() {
         // dummy versions list where storage is never true
-        java.util.List<?> versions = List.of(
+        var versions = YAMLUtil.fromBare(List.of(
                 HashMap.of(
                         "name", "v1beta1",
                         "served", true,
@@ -68,10 +69,10 @@ public class SpecExtractorHelperTest {
                         "served", true,
                         "storage", false,
                         "schema", (Object) "object").toJavaMap()
-        ).toJavaList();
+        ).toJavaList()).asSequence();
 
         Exception exception = assertThrows(IllegalStateException.class,
-                () -> SpecExtractorHelper.getLatestVersion((java.util.List<Object>) versions));
+                () -> SpecExtractorHelper.getLatestVersion(versions));
 
         assertTrue(exception.getMessage().contains("No version found with storage=true"));
     }
