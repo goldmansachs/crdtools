@@ -19,31 +19,40 @@ public class SpecExtractorHelper {
      * @return The extracted specs.
      */
      static HashMap<Object, HashMap<String, Object>> pullOpenapiSpecs(List<YAMLValue> allTheYamls) {
+         return HashMap.ofEntries(allTheYamls.map(y -> {
+             var kind = y.asMapping().get("spec")
+                     .asMapping().get("names")
+                     .asMapping().get("kind")
+                     .asString();
 
-        return HashMap.ofEntries(allTheYamls.map(y -> {
-            var kind = y.asMapping().get("spec")
-                    .asMapping().get("names")
-                    .asMapping().get("kind")
-                    .asString();
+             var group = y.asMapping().get("spec").asMapping().get("group").asString();
 
-            // Get the latest version of the current CDR and read its openAPIV3Schema
-            var latestVersion = getLatestVersion(y.asMapping().get("spec").asMapping().get("versions").asSequence());
-            var schema = latestVersion.get("schema").asMapping().get("openAPIV3Schema").asMapping();
+             // Get the latest version of the current CDR and read its openAPIV3Schema
+             var latestVersion = getLatestVersion(y.asMapping().get("spec").asMapping().get("versions").asSequence());
+             var version = latestVersion.asMapping().get("name").asString();
+             var schema = latestVersion.get("schema").asMapping().get("openAPIV3Schema").asMapping();
 
-            //noinspection unchecked
-            var properties = (java.util.Map)schema.get("properties").asMapping().toBareObject();
+             //noinspection unchecked
+             var properties = (java.util.Map)schema.get("properties").asMapping().toBareObject();
 
-            properties.put("metadata", makeSpec("V1ObjectMeta"));
-            if (!properties.containsKey("kind")) {
-             properties.put("kind", makeSpec("string"));
-            }
-            if (!properties.containsKey("apiVersion")) {
-             properties.put("apiVersion", makeSpec("string"));
-            }
+             properties.put("metadata", makeSpec("V1ObjectMeta"));
+             if (!properties.containsKey("kind")) {
+                 properties.put("kind", makeSpec("string"));
+             }
+             if (!properties.containsKey("apiVersion")) {
+                 properties.put("apiVersion", makeSpec("string"));
+             }
 
-            var bareSchema = io.vavr.collection.HashMap.ofAll((java.util.Map<String,Object>)schema.toBareObject());
-            bareSchema = bareSchema.put("properties", properties);
-            return Tuple.of(kind, HashMap.of("type", (Object) "object").merge(bareSchema));
+             var bareSchema = io.vavr.collection.HashMap.ofAll((java.util.Map<String,Object>)schema.toBareObject());
+             bareSchema = bareSchema.put("properties", properties);
+
+             var additionalInfo = List.of(
+                     group,
+                     version,
+                     kind
+             );
+
+             return Tuple.of(additionalInfo, HashMap.of("type", (Object) "object").merge(bareSchema));
         }));
     }
 

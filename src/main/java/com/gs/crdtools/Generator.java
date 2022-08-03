@@ -4,14 +4,9 @@ import com.resare.nryaml.YAMLUtil;
 import com.resare.nryaml.YAMLValue;
 import io.vavr.collection.List;
 import io.vavr.collection.Map;
-import org.yaml.snakeyaml.Yaml;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 import static com.gs.crdtools.SourceGenFromSpec.toZip;
 
@@ -26,8 +21,6 @@ public class Generator {
     }
 
     static List<YAMLValue> parseCrds(List<Path> inputs) {
-        var parser = new Yaml();
-
         return inputs.flatMap(YAMLUtil::allFromPath);
     }
 

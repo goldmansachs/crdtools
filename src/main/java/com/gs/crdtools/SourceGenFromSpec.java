@@ -71,38 +71,44 @@ public class SourceGenFromSpec {
      * @param specs The OpenAPIV3 specification yaml file in the form of a string.
      * @throws IOException If any error occurs while loading the given paths.
      */
-    public static Map<Path, String> generateSourceCodeFromSpecs(String specs) throws IOException {
+    public static Map<Path, String> generateSourceCodeFromSpecs(List<Spec> specs) throws IOException {
         // setting this system property has the interesting effect of preventing the
         // generation of a whole set of unrelated files that we don't care about.
         System.setProperty("generateModels", "true");
 
+        HashMap <Path, String> result = HashMap.empty();
         var tmpOutputDir = Files.createTempDirectory("openAPIGen");
 
-        var cc = new CodegenConfigurator()
-                .setInputSpec(specs)
-                .setLang(CrdtoolsCodegen.class.getCanonicalName())
-                .setOutputDir(tmpOutputDir.toAbsolutePath().toString())
-                .setModelPackage("com.gs.crdtools")
-                // CodegenConfigurator modifies its Map arguments, so we need to wrap it in something mutable
-                .setAdditionalProperties(
-                    HashMap.of(
-                        "java8", (Object)true,
-                        "hideGenerationTimestamp", true,
-                        "notNullJacksonAnnotation", true
-                    ).toJavaMap()
-                )
-                .setTypeMappings(
-                    HashMap.of(
-                        V1ObjectMeta.class.getSimpleName(),
-                        V1ObjectMeta.class.getCanonicalName()
-                    ).toJavaMap()
-                );
         try {
-            new DefaultGenerator().opts(cc.toClientOptInput()).generate();
-            return readDir(tmpOutputDir, ".java");
+            for (var spec : specs) {
+                var cc = new CodegenConfigurator()
+                        .setInputSpec(spec.openApiSpec())
+                        .setLang(CrdtoolsCodegen.class.getCanonicalName())
+                        .setOutputDir(tmpOutputDir.toAbsolutePath().toString())
+                        .setModelPackage("com.gs.crdtools")
+                        // CodegenConfigurator modifies its Map arguments, so we need to wrap it in something mutable
+                        .setAdditionalProperties(
+                                HashMap.of(
+                                        "java8", (Object) true,
+                                        "hideGenerationTimestamp", true,
+                                        "notNullJacksonAnnotation", true
+                                ).toJavaMap()
+                        )
+                        .setTypeMappings(
+                                HashMap.of(
+                                        V1ObjectMeta.class.getSimpleName(),
+                                        V1ObjectMeta.class.getCanonicalName()
+                                ).toJavaMap()
+                        );
+
+                new DefaultGenerator().opts(cc.toClientOptInput()).generate();
+                result = result.merge(readDir(tmpOutputDir, ".java"));
+            }
         } finally {
             delete(tmpOutputDir);
         }
+
+        return result;
     }
 
     private static void delete(Path dir) throws IOException {
@@ -139,27 +145,35 @@ public class SourceGenFromSpec {
                  .collect(HashMap.collector());
      }
 
+     public record Spec(String group, String version, String openApiSpec) {
+     }
 
     /**
      * Extract the OpenAPIV3 specs from a list of CRDs objects extracted from a previous yaml file,
      * then returns the specs as a string.
      * @param crdsYaml The list of CRDs objects.
      */
-    static String extractSpecs(List<YAMLValue> crdsYaml) {
-
+    static List<Spec> extractSpecs(List<YAMLValue> crdsYaml) {
         // Now just pull out the openapi specs
-        HashMap<Object, HashMap<String, Object>> onlySpecs = SpecExtractorHelper.pullOpenapiSpecs(crdsYaml);
+        var onlySpecs = SpecExtractorHelper.pullOpenapiSpecs(crdsYaml);
 
-        var full = HashMap.of(
-                "openapi", "3.0.0",
-                "info", HashMap.of("version", "1.0.0",
-                        "title", "kcc resources",
-                        "license", HashMap.of("name", "MIT")),
-                "paths", HashMap.of("/dummy", HashMap.empty()),
-                "components", HashMap.of("schemas", onlySpecs)
-        );
+        return onlySpecs.map(spec -> {
+            List<String> crdAdditionalInfo = (List<String>) spec._1;
+            String group = crdAdditionalInfo.get(0);
+            String version = crdAdditionalInfo.get(1);
+            String kind = crdAdditionalInfo.get(2);
 
-        return writeSpecsToString(full);
+            var openapi = HashMap.of(
+                    "openapi", "3.0.0",
+                    "info", HashMap.of("version", "1.0.0",
+                            "title", "kcc resources",
+                            "license", HashMap.of("name", "MIT")),
+                    "paths", HashMap.of("/dummy", HashMap.empty()),
+                    "components", HashMap.of("schemas", HashMap.of(kind, spec._2))
+            );
+
+            return new Spec(group, version, writeSpecsToString(openapi));
+        }).toList();
     }
 
     /**
