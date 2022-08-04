@@ -10,7 +10,7 @@ import java.nio.file.Path;
  * to that if it exists, otherwise fall back to the original behaviour.
  */
 class OverrideTemplateLoader extends CodegenTemplateLoader {
-    private static final String OVERRIDE_CLASSPATH_PREFIX = "/swaggerTemplateOverloads";
+    private static final String OVERRIDE_CLASSPATH_PREFIX = "swaggerTemplateOverloads";
 
     @Override
     public String resolve(String uri) {
@@ -21,7 +21,7 @@ class OverrideTemplateLoader extends CodegenTemplateLoader {
         var overridePath = Path.of(OVERRIDE_CLASSPATH_PREFIX, uri).toString();
         var resource = this.getClass().getClassLoader().getResource(overridePath);
         if (resource != null) {
-            return overridePath;
+            return '/' + overridePath;
         }
 
         return super.resolve(uri);
