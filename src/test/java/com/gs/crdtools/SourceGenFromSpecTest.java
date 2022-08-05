@@ -1,6 +1,8 @@
 package com.gs.crdtools;
 
+import com.google.devtools.build.runfiles.Runfiles;
 import io.vavr.collection.HashMap;
+import io.vavr.collection.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -35,4 +37,19 @@ public class SourceGenFromSpecTest {
         );
     }
 
+    @Test
+    void testExtractSpecs() throws IOException {
+        var runFiles = Runfiles.create();
+        var input = Path.of(runFiles.rlocation("__main__/src/test/resources/minimal-crd.yaml"));
+
+        var parsedCrds = Generator.parseCrds(List.of(input));
+        var specsList = SourceGenFromSpec.extractSpecs(parsedCrds);
+
+        // there is only one crd, therefore there must be only one Spec record
+        assertEquals(1, specsList.size());
+
+        // the spec record must contain the following fields:
+        assertEquals("stable.example.com", specsList.get(0).group());
+        assertEquals("v1", specsList.get(0).version());
+    }
 }
