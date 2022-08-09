@@ -18,7 +18,7 @@ new_git_repository(
 git_repository(
     name = "nryaml",
     remote = "https://github.com/nresare/nryaml",
-    commit = "0c57aa3e0f549b96795c2af953cc98862a2df2af",
+    commit = "fba01c14d03ee24a57ddeb67b922154fa1d31401",
 )
 
 ###########################
