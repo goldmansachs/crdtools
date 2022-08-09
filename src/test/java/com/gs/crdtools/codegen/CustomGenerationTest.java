@@ -10,12 +10,16 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static com.gs.crdtools.SourceGenFromSpec.OUTPUT_PACKAGE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CustomGenerationTest {
 
-    public static final Path OUTPUT_FILE = Path.of("src/main/java/com/gs/crdtools/Thing.java");
+    public static final Path OUTPUT_FILE = Path.of(
+            "src/main/java",
+            OUTPUT_PACKAGE.replaceAll("\\.", "/")
+    ).resolve("Thing.java");
 
     @Test
     void testGenerateMinimalJava() throws IOException {
@@ -27,6 +31,7 @@ public class CustomGenerationTest {
 
         assertEquals(HashSet.of(OUTPUT_FILE), result.keySet());
         assertTrue(result.get(OUTPUT_FILE).get().contains("GS annotation goes here"));
+        assertTrue(result.get(OUTPUT_FILE).get().contains("import com.gs.crdtools.BaseObject"));
 
     }
 

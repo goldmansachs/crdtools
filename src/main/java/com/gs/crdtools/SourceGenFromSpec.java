@@ -32,6 +32,7 @@ import java.util.zip.ZipOutputStream;
  * - bazel build //:kcc_java_genned.
  */
 public class SourceGenFromSpec {
+    public static final String OUTPUT_PACKAGE = "com.gs.crdtools.generated";
 
     /**
      * Generate POJOs from the given OpenAPIV3 specifications and write them to the given path.
@@ -85,7 +86,7 @@ public class SourceGenFromSpec {
                         .setInputSpec(spec.openApiSpec())
                         .setLang(CrdtoolsCodegen.class.getCanonicalName())
                         .setOutputDir(tmpOutputDir.toAbsolutePath().toString())
-                        .setModelPackage("com.gs.crdtools")
+                        .setModelPackage(OUTPUT_PACKAGE)
                         // CodegenConfigurator modifies its Map arguments, so we need to wrap it in something mutable
                         .setAdditionalProperties(
                                 HashMap.of(

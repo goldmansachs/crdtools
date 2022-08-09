@@ -8,10 +8,17 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.nio.file.Path;
 
+import static com.gs.crdtools.SourceGenFromSpec.OUTPUT_PACKAGE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GeneratorTest {
+
+    public static final Path OUTPUT_DIR = Path.of(
+            "src/main/java",
+            OUTPUT_PACKAGE.replaceAll("\\.", "/")
+    );
+
     @Test
     void testParseCrds() throws IOException {
         var runFiles = Runfiles.create();
@@ -32,9 +39,8 @@ public class GeneratorTest {
         var result = Generator.generate(Generator.parseCrds(List.of(input)));
 
         // then
-        var base = Path.of("src/main/java/com/gs/crdtools");
-        var cronTabSpec = base.resolve("CronTabSpec.java");
-        var cronTab = base.resolve("CronTab.java");
+        var cronTabSpec = OUTPUT_DIR.resolve("CronTabSpec.java");
+        var cronTab = OUTPUT_DIR.resolve("CronTab.java");
         assertEquals(HashSet.of(cronTab, cronTabSpec), result.keySet());
 
         assertTrue(result.get(cronTabSpec).get().contains("class CronTabSpec"));
@@ -51,8 +57,7 @@ public class GeneratorTest {
 
         var result = Generator.generate(Generator.parseCrds(List.of(input)));
 
-        var base = Path.of("src/main/java/com/gs/crdtools");
-        var cronTab = base.resolve("CronTab.java");
+        var cronTab = OUTPUT_DIR.resolve("CronTab.java");
 
 
         assertTrue(result.get(cronTab).get().contains("@JsonProperty(\"metadata\")"));

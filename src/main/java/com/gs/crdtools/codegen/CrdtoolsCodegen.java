@@ -16,6 +16,7 @@ public class CrdtoolsCodegen extends SpringCodegen {
     public void processOpts() {
         super.processOpts();
         templateEngine = new CustomOverrideTemplateEngine(this);
+        importMapping.put("BaseObject", "com.gs.crdtools.BaseObject");
     }
 
     /**
@@ -30,7 +31,7 @@ public class CrdtoolsCodegen extends SpringCodegen {
                                                         java.util.Map<String, Schema> allSchemas) {
         var ret = super.fromModel(name, schema, allSchemas);
 
-        ret.imports.add(BaseObject.class.getSimpleName());
+        ret.imports.add("BaseObject");
 
         boolean hasMetadata = List.ofAll(ret.requiredVars)
                 .appendAll(ret.optionalVars)
