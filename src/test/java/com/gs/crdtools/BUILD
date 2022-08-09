@@ -44,7 +44,6 @@ java_library(
     srcs = ["generate-java-from-crds"],
     deps = [
         "//src/main/java/com/gs/crdtools:base-object",
-        "//src/main/java/org/springframework/validation/annotation:validation-stub",
         "@maven//:com_fasterxml_jackson_core_jackson_annotations",
         "@maven//:io_kubernetes_client_java_api",
         "@maven//:io_swagger_core_v3_swagger_annotations",

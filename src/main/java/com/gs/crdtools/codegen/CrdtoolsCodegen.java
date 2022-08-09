@@ -14,6 +14,9 @@ import io.vavr.collection.List;
 public class CrdtoolsCodegen extends SpringCodegen {
     @Override
     public void processOpts() {
+        // We are not using these, and disabling it removes the need for the
+        // @Validated annotation from Springframework.
+        setUseBeanValidation(false);
         super.processOpts();
         templateEngine = new CustomOverrideTemplateEngine(this);
         importMapping.put("BaseObject", "com.gs.crdtools.BaseObject");
