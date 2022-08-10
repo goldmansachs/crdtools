@@ -10,7 +10,6 @@ import java.nio.file.Path;
 
 import static com.gs.crdtools.SourceGenFromSpec.OUTPUT_PACKAGE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GeneratorTest {
 
@@ -36,14 +35,14 @@ public class GeneratorTest {
 
         var input = Path.of(runFiles.rlocation("__main__/src/test/resources/minimal-crd.yaml"));
         var parsedCrd = Generator.parseCrds(List.of(input));
-        var sourceCodeFromSpecs = Generator.generate(parsedCrd);
+        var sourceCodeFromSpecs = new Result(Generator.generate(parsedCrd));
 
         var cronTabSpec = OUTPUT_DIR.resolve("CronTabSpec.java");
         var cronTab = OUTPUT_DIR.resolve("CronTab.java");
-        assertEquals(HashSet.of(cronTab, cronTabSpec), sourceCodeFromSpecs.keySet());
+        assertEquals(HashSet.of(cronTab, cronTabSpec), sourceCodeFromSpecs.inner().keySet());
 
-        assertTrue(sourceCodeFromSpecs.get(cronTabSpec).get().contains("class CronTabSpec"));
-        assertTrue(sourceCodeFromSpecs.get(cronTab).get().contains("class CronTab"));
+        sourceCodeFromSpecs.assertIn("CronTabSpec.java", "class CronTabSpec");
+        sourceCodeFromSpecs.assertIn("CronTab.java", "class CronTab");
     }
 
     @Test
@@ -52,30 +51,23 @@ public class GeneratorTest {
 
         var input = Path.of(runFiles.rlocation("__main__/src/test/resources/minimal-crd.yaml"));
         var parsedCrd = Generator.parseCrds(List.of(input));
-        var sourceCodeFromSpecs = Generator.generate(parsedCrd);
+        var sourceCodeFromSpecs = new Result(Generator.generate(parsedCrd));
 
-        // Additionally to SpecExtractorHelperTest.testPullOpenapiSpecsAddsInfo()
-        // this test checks if the additional properties are added to the generated code
-        var cronTab = OUTPUT_DIR.resolve("CronTab.java");
+        sourceCodeFromSpecs.assertIn("CronTab.java", "@JsonProperty(\"metadata\")");
+        sourceCodeFromSpecs.assertIn("CronTab.java", "@JsonProperty(\"kind\")");
+        sourceCodeFromSpecs.assertIn("CronTab.java", "@JsonProperty(\"apiVersion\")");
 
-        assertTrue(sourceCodeFromSpecs.get(cronTab).get().contains("@JsonProperty(\"metadata\")"));
-        assertTrue(sourceCodeFromSpecs.get(cronTab).get().contains("@JsonProperty(\"kind\")"));
-        assertTrue(sourceCodeFromSpecs.get(cronTab).get().contains("@JsonProperty(\"apiVersion\")"));
     }
 
     @Test
-    void testGenerateCodeContainsGroupAndVersion() throws IOException {
+    void testGeneratedCodeContainsGroupAndVersion() throws IOException {
         var runFiles = Runfiles.create();
 
         var input = Path.of(runFiles.rlocation("__main__/src/test/resources/minimal-crd.yaml"));
         var parsedCrd = Generator.parseCrds(List.of(input));
-        var sourceCodeFromSpecs = Generator.generate(parsedCrd);
+        var sourceCodeFromSpecs = new Result(Generator.generate(parsedCrd));
 
-        var cronTabSpec = OUTPUT_DIR.resolve("CronTabSpec.java");
-        var cronTab = OUTPUT_DIR.resolve("CronTab.java");
-        assertEquals(HashSet.of(cronTab, cronTabSpec), sourceCodeFromSpecs.keySet());
-
-        assertTrue(sourceCodeFromSpecs.get(cronTabSpec).get().contains("group = \"stable.example.com\""));
-        assertTrue(sourceCodeFromSpecs.get(cronTab).get().contains("version = \"v1\""));
+        sourceCodeFromSpecs.assertIn("CronTab.java", "group = \"stable.example.com\"");
+        sourceCodeFromSpecs.assertIn("CronTab.java", "version = \"v1\"");
     }
 }

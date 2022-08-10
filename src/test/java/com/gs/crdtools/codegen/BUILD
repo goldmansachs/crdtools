@@ -6,6 +6,7 @@ java_junit5_test(
         "*Test.java",
     ]),
     deps = [
+        "//src/test/java/com/gs/crdtools:result-helper",
         "//src/main/java/com/gs/crdtools/codegen:swagger-codegen-extensions",
         "//src/main/java/com/gs/crdtools:openapi-src-genner",
         "//src/main/java/com/gs/crdtools:gen-source-from-spec",
@@ -17,4 +18,5 @@ java_junit5_test(
     data = [
         "//src/test/resources:all",
     ],
+    visibility = ["//visibility:public"],
 )

@@ -12,6 +12,7 @@ java_junit5_test(
     ],
     test_package = "com.gs.crdtools",
     deps = [
+        ":result-helper",
         "//src/main/java/com/gs/crdtools:gen-source-from-spec",
         "//src/main/java/com/gs/crdtools:generator",
         "//src/main/java/com/gs/crdtools:vavr-helpers",
@@ -50,4 +51,14 @@ java_library(
         "@maven//:io_swagger_core_v3_swagger_annotations",
         "@maven//:javax_validation_validation_api",
     ],
+)
+
+java_library(
+    name = "result-helper",
+    srcs = ["Result.java"],
+    deps = [
+        "@maven//:io_vavr_vavr",
+        "@org_junit_jupiter_junit_jupiter_api//jar",
+    ],
+    visibility = ["//visibility:public"],
 )
