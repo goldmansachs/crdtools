@@ -7,8 +7,8 @@ filegroup(
 filegroup(
     name = "test_crds",
     srcs = [
-        "minimal-crd.yaml",
         "managedcertificates-crd.yaml",
+        "minimal-crd.yaml",
     ],
     visibility = ["//visibility:public"],
 )

@@ -15,13 +15,13 @@ java_junit5_test(
         ":result-helper",
         "//src/main/java/com/gs/crdtools:gen-source-from-spec",
         "//src/main/java/com/gs/crdtools:generator",
-        "//src/main/java/com/gs/crdtools:vavr-helpers",
         "//src/main/java/com/gs/crdtools:openapi-src-genner",
         "//src/main/java/com/gs/crdtools:spec-extractor",
+        "//src/main/java/com/gs/crdtools:vavr-helpers",
         "//src/main/java/com/gs/crdtools/codegen:swagger-codegen-extensions",
         "@bazel_tools//tools/java/runfiles",
         "@maven//:io_vavr_vavr",
-        "@nryaml//:nryaml",
+        "@nryaml",
     ],
 )
 
@@ -44,8 +44,8 @@ java_library(
     name = "compiles-generated-java",
     srcs = ["generate-java-from-crds"],
     deps = [
-        "//src/main/java/com/gs/crdtools:base-object",
         "//src/main/java/com/gs/crdtools:api-annotation",
+        "//src/main/java/com/gs/crdtools:base-object",
         "@maven//:com_fasterxml_jackson_core_jackson_annotations",
         "@maven//:io_kubernetes_client_java_api",
         "@maven//:io_swagger_core_v3_swagger_annotations",
@@ -56,9 +56,9 @@ java_library(
 java_library(
     name = "result-helper",
     srcs = ["Result.java"],
+    visibility = ["//visibility:public"],
     deps = [
         "@maven//:io_vavr_vavr",
         "@org_junit_jupiter_junit_jupiter_api//jar",
     ],
-    visibility = ["//visibility:public"],
 )

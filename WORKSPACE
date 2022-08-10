@@ -5,7 +5,7 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 ## External dependencies ##
 ###########################
 
-load("@bazel_tools//tools/build_defs/repo:git.bzl", "new_git_repository", "git_repository")
+load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository", "new_git_repository")
 
 new_git_repository(
     name = "k8s-config-connector",
@@ -17,8 +17,8 @@ new_git_repository(
 
 git_repository(
     name = "nryaml",
-    remote = "https://github.com/nresare/nryaml",
     commit = "fba01c14d03ee24a57ddeb67b922154fa1d31401",
+    remote = "https://github.com/nresare/nryaml",
 )
 
 ###########################
