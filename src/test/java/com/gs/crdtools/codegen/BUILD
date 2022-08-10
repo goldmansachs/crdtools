@@ -15,6 +15,6 @@ java_junit5_test(
     test_package = "com.gs.crdtools.codegen",
     size = "small",
     data = [
-        "//src/test/resources:all",
+        "//src/test/resources:minimal-openapi",
     ],
 )
