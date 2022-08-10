@@ -6,6 +6,12 @@ java_library(
 )
 
 java_library(
+    name = "api-annotation",
+    srcs = ["ApiInformation.java"],
+    visibility = ["//visibility:public"],
+)
+
+java_library(
     name = "spec-extractor",
     visibility = ["//visibility:public"],
     srcs = ["SpecExtractorHelper.java"],
