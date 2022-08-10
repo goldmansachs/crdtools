@@ -1,10 +1,12 @@
 package com.gs.crdtools.codegen;
 
 import com.google.devtools.build.runfiles.Runfiles;
+import com.gs.crdtools.ApiInformation;
 import com.gs.crdtools.Result;
+import com.gs.crdtools.generated.CronTab;
 import com.gs.crdtools.SourceGenFromSpec;
-import io.vavr.collection.List;
 import io.vavr.collection.HashSet;
+import io.vavr.collection.List;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -13,6 +15,7 @@ import java.nio.file.Path;
 
 import static com.gs.crdtools.SourceGenFromSpec.OUTPUT_PACKAGE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class CustomGenerationTest {
 
@@ -32,5 +35,13 @@ public class CustomGenerationTest {
         assertEquals(HashSet.of(OUTPUT_FILE), result.inner().keySet());
         result.assertIn("Thing.java", "@ApiInformation");
         result.assertIn("Thing.java", "import com.gs.crdtools.BaseObject");
+    }
+
+    @Test
+    void testReadAnnotation() {
+        var cronTab = new CronTab();
+        var annotation = cronTab.getClass().getAnnotation(ApiInformation.class);
+        assertEquals("stable.example.com", annotation.group());
+        assertEquals("v1", annotation.version());
     }
 }
