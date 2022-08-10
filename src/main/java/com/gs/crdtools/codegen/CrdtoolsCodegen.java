@@ -3,7 +3,6 @@ package com.gs.crdtools.codegen;
 import com.gs.crdtools.BaseObject;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.swagger.codegen.v3.CodegenModel;
-import io.swagger.codegen.v3.CodegenProperty;
 import io.swagger.codegen.v3.generators.java.SpringCodegen;
 import io.swagger.v3.oas.models.media.Schema;
 import io.vavr.collection.List;
@@ -20,6 +19,7 @@ public class CrdtoolsCodegen extends SpringCodegen {
         super.processOpts();
         templateEngine = new CustomOverrideTemplateEngine(this);
         importMapping.put("BaseObject", "com.gs.crdtools.BaseObject");
+        importMapping.put("ApiInformation", "com.gs.crdtools.ApiInformation");
     }
 
     /**
@@ -35,6 +35,7 @@ public class CrdtoolsCodegen extends SpringCodegen {
         var ret = super.fromModel(name, schema, allSchemas);
 
         ret.imports.add("BaseObject");
+        ret.imports.add("ApiInformation");
 
         boolean hasMetadata = List.ofAll(ret.requiredVars)
                 .appendAll(ret.optionalVars)

@@ -92,7 +92,9 @@ public class SourceGenFromSpec {
                                 HashMap.of(
                                         "java8", (Object) true,
                                         "hideGenerationTimestamp", true,
-                                        "notNullJacksonAnnotation", true
+                                        "notNullJacksonAnnotation", true,
+                                        "crdGroup", spec.group(),
+                                        "crdVersion", spec.version()
                                 ).toJavaMap()
                         )
                         .setTypeMappings(

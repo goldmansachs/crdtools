@@ -22,46 +22,60 @@ public class GeneratorTest {
     @Test
     void testParseCrds() throws IOException {
         var runFiles = Runfiles.create();
-        var input = Path.of(runFiles.rlocation("__main__/src/test/resources/minimal-crd.yaml"));
 
-        var result = Generator.parseCrds(List.of(input));
-        assertEquals(1, result.length());
-        assertEquals("stable.example.com", result.get(0).asMapping().get("spec").asMapping().get("group").asString());
+        var input = Path.of(runFiles.rlocation("__main__/src/test/resources/minimal-crd.yaml"));
+        var parsedCrd = Generator.parseCrds(List.of(input));
+
+        assertEquals(1, parsedCrd.length());
+        assertEquals("stable.example.com", parsedCrd.get(0).asMapping().get("spec").asMapping().get("group").asString());
     }
 
     @Test
-    void testGenerate() throws IOException  {
-        // given
+    void testGenerate() throws IOException {
         var runFiles = Runfiles.create();
+
         var input = Path.of(runFiles.rlocation("__main__/src/test/resources/minimal-crd.yaml"));
+        var parsedCrd = Generator.parseCrds(List.of(input));
+        var sourceCodeFromSpecs = Generator.generate(parsedCrd);
 
-        // when
-        var result = Generator.generate(Generator.parseCrds(List.of(input)));
-
-        // then
         var cronTabSpec = OUTPUT_DIR.resolve("CronTabSpec.java");
         var cronTab = OUTPUT_DIR.resolve("CronTab.java");
-        assertEquals(HashSet.of(cronTab, cronTabSpec), result.keySet());
+        assertEquals(HashSet.of(cronTab, cronTabSpec), sourceCodeFromSpecs.keySet());
 
-        assertTrue(result.get(cronTabSpec).get().contains("class CronTabSpec"));
-        assertTrue(result.get(cronTab).get().contains("class CronTab"));
+        assertTrue(sourceCodeFromSpecs.get(cronTabSpec).get().contains("class CronTabSpec"));
+        assertTrue(sourceCodeFromSpecs.get(cronTab).get().contains("class CronTab"));
     }
 
     @Test
-    void testGenerateCodeContainsAdditionalProperties() throws IOException  {
+    void testGenerateCodeContainsAdditionalProperties() throws IOException {
+        var runFiles = Runfiles.create();
+
+        var input = Path.of(runFiles.rlocation("__main__/src/test/resources/minimal-crd.yaml"));
+        var parsedCrd = Generator.parseCrds(List.of(input));
+        var sourceCodeFromSpecs = Generator.generate(parsedCrd);
+
         // Additionally to SpecExtractorHelperTest.testPullOpenapiSpecsAddsInfo()
         // this test checks if the additional properties are added to the generated code
-
-        var runFiles = Runfiles.create();
-        var input = Path.of(runFiles.rlocation("__main__/src/test/resources/minimal-crd.yaml"));
-
-        var result = Generator.generate(Generator.parseCrds(List.of(input)));
-
         var cronTab = OUTPUT_DIR.resolve("CronTab.java");
 
+        assertTrue(sourceCodeFromSpecs.get(cronTab).get().contains("@JsonProperty(\"metadata\")"));
+        assertTrue(sourceCodeFromSpecs.get(cronTab).get().contains("@JsonProperty(\"kind\")"));
+        assertTrue(sourceCodeFromSpecs.get(cronTab).get().contains("@JsonProperty(\"apiVersion\")"));
+    }
 
-        assertTrue(result.get(cronTab).get().contains("@JsonProperty(\"metadata\")"));
-        assertTrue(result.get(cronTab).get().contains("@JsonProperty(\"kind\")"));
-        assertTrue(result.get(cronTab).get().contains("@JsonProperty(\"apiVersion\")"));
+    @Test
+    void testGenerateCodeContainsGroupAndVersion() throws IOException {
+        var runFiles = Runfiles.create();
+
+        var input = Path.of(runFiles.rlocation("__main__/src/test/resources/minimal-crd.yaml"));
+        var parsedCrd = Generator.parseCrds(List.of(input));
+        var sourceCodeFromSpecs = Generator.generate(parsedCrd);
+
+        var cronTabSpec = OUTPUT_DIR.resolve("CronTabSpec.java");
+        var cronTab = OUTPUT_DIR.resolve("CronTab.java");
+        assertEquals(HashSet.of(cronTab, cronTabSpec), sourceCodeFromSpecs.keySet());
+
+        assertTrue(sourceCodeFromSpecs.get(cronTabSpec).get().contains("group = \"stable.example.com\""));
+        assertTrue(sourceCodeFromSpecs.get(cronTab).get().contains("version = \"v1\""));
     }
 }

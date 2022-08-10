@@ -9,6 +9,7 @@ java_library(
     resources = ["//src/main/resources:all"],
     deps = [
         "//src/main/java/com/gs/crdtools:base-object",
+        "//src/main/java/com/gs/crdtools:api-annotation",
         "@maven//:io_kubernetes_client_java_api",
         "@maven//:io_swagger_codegen_v3_swagger_codegen",
         "@maven//:io_swagger_codegen_v3_swagger_codegen_generators",
