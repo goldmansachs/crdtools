@@ -1,6 +1,6 @@
 filegroup(
-    name = "all",
-    srcs = glob(["*.txt"]) + ["minimal-openapi.yaml"],
+    name = "minimal-openapi",
+    srcs = ["minimal-openapi.yaml"],
     visibility = ["//visibility:public"],
 )
 

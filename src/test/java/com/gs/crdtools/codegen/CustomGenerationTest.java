@@ -30,7 +30,18 @@ public class CustomGenerationTest {
         var result = new Result(SourceGenFromSpec.generateSourceCodeFromSpecs(crd));
 
         assertEquals(HashSet.of(OUTPUT_FILE), result.inner().keySet());
-        result.assertIn("Thing.java","@ApiInformation");
+        result.assertIn("Thing.java", "@ApiInformation");
         result.assertIn("Thing.java", "import com.gs.crdtools.BaseObject");
+    }
+
+    public record Result(Map<Path, String> inner) {
+        public void assertIn(String file, String in) {
+
+            Path key = Stream.ofAll(inner.keySet()).find(candidate -> candidate.endsWith(file)).getOrElseThrow(IllegalArgumentException::new);
+            assertTrue(
+                    inner.get(key).get().contains(in),
+                    "Output file does not contain '%s'".formatted(in));
+
+        }
     }
 }

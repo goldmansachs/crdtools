@@ -7,7 +7,7 @@ java_junit5_test(
         "*Test.java",
     ]),
     data = [
-        "//src/test/resources:all",
+        "//src/test/resources:minimal-openapi",
         "//src/test/resources:test_crds",
     ],
     test_package = "com.gs.crdtools",
