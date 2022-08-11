@@ -67,3 +67,17 @@ java_binary(
         "@nryaml",
     ],
 )
+
+java_library(
+    name = "runtime-dependencies",
+    srcs = [
+        "ApiInformation.java",
+        "BaseObject.java",
+        ],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":api-annotation",
+        ":base-object",
+        "@maven//:io_kubernetes_client_java_api",
+    ],
+)
