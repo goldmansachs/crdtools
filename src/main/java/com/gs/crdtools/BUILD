@@ -25,17 +25,6 @@ java_library(
 )
 
 java_library(
-    name = "openapi-src-genner",
-    srcs = ["SourceGeneratorHelper.java"],
-    visibility = ["//visibility:public"],
-    deps = [
-        "@maven//:com_fasterxml_jackson_core_jackson_core",
-        "@maven//:com_fasterxml_jackson_core_jackson_databind",
-        "@maven//:io_vavr_vavr",
-    ],
-)
-
-java_library(
     name = "vavr-helpers",
     srcs = ["VavrHelpers.java"],
     visibility = ["//visibility:public"],
@@ -54,7 +43,6 @@ java_binary(
     main_class = "com.gs.crdtools.SourceGenFromSpec",
     visibility = ["//visibility:public"],
     deps = [
-        "//src/main/java/com/gs/crdtools:openapi-src-genner",
         "//src/main/java/com/gs/crdtools:spec-extractor",
         "//src/main/java/com/gs/crdtools:vavr-helpers",
         "//src/main/java/com/gs/crdtools/codegen:swagger-codegen-extensions",
@@ -74,7 +62,6 @@ java_binary(
     deps = [
         ":gen-source-from-spec",
         ":spec-extractor",
-        "//src/main/java/com/gs/crdtools:openapi-src-genner",
         "//src/main/java/com/gs/crdtools/codegen:swagger-codegen-extensions",
         "@maven//:io_vavr_vavr",
         "@maven//:org_yaml_snakeyaml",

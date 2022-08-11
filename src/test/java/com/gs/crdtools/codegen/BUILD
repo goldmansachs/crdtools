@@ -14,7 +14,6 @@ java_junit5_test(
         ":compiles-generated-java",
         "//src/main/java/com/gs/crdtools:api-annotation",
         "//src/main/java/com/gs/crdtools:gen-source-from-spec",
-        "//src/main/java/com/gs/crdtools:openapi-src-genner",
         "//src/main/java/com/gs/crdtools/codegen:swagger-codegen-extensions",
         "//src/test/java/com/gs/crdtools:result-helper",
         "@bazel_tools//tools/java/runfiles",
