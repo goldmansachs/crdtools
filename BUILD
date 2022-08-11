@@ -1,4 +1,1 @@
-alias(
-    name = "openapi-src-genner",
-    actual = "//src/main/java/com/gs/crdtools:openapi-src-genner",
-)
+# Temporary empty, will include access point to Generator.java in the next PR

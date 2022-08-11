@@ -11,6 +11,7 @@ import java.util.TreeMap;
  * Helper methods for working with Vavr.
  */
 public class VavrHelpers {
+
     private static <T> T checkType(T t, Object debugData, Set<Class<?>> expectedLeafTypes) {
         if (t != null && (t.getClass().getPackage().equals(java.util.List.class.getPackage())
                         || expectedLeafTypes.find(c -> c.isAssignableFrom(t.getClass())).isDefined())) {
@@ -54,16 +55,4 @@ public class VavrHelpers {
         return new TreeMap<>(recursed.toJavaMap());
     }
 
-    public static <T> T extractByPath(Object k8sResourceRef, String... path) {
-        var asList = List.of(path);
-        Object ret = k8sResourceRef;
-        while (!asList.isEmpty()) {
-            //noinspection unchecked
-            ret = ((java.util.Map<String, Object>) ret).get(asList.head());
-            asList = asList.tail();
-        }
-
-        //noinspection unchecked
-        return (T) ret;
-    }
 }
