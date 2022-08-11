@@ -1,7 +1,6 @@
 package com.gs.crdtools;
 
 import com.gs.crdtools.codegen.CrdtoolsCodegen;
-import com.resare.nryaml.YAMLUtil;
 import com.resare.nryaml.YAMLValue;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.swagger.codegen.v3.DefaultGenerator;
@@ -20,7 +19,6 @@ import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -33,26 +31,6 @@ import java.util.zip.ZipOutputStream;
  */
 public class SourceGenFromSpec {
     public static final String OUTPUT_PACKAGE = "com.gs.crdtools.generated";
-
-    /**
-     * Generate POJOs from the given OpenAPIV3 specifications and write them to the given path.
-     * @param args The genned.srcjar location, that is, the path where the generated POJOs will be written.
-     * @throws IOException If any error occurs while loading the given paths.
-     * @throws IllegalArgumentException If the number of arguments is not 1.
-     */
-    public static void main(String[] args) throws IllegalArgumentException, IOException {
-        if (args.length == 1) {
-            var outputPath = Paths.get(args[0]);
-
-            List<Object> allTheYamls = SpecExtractorHelper.getCrdsYaml();
-            var openApiSpecs = extractSpecs(allTheYamls.toStream().map(YAMLUtil::fromBare).toList());
-
-            toZip(generateSourceCodeFromSpecs(openApiSpecs), outputPath);
-
-        } else {
-            throw new IllegalArgumentException("Invalid number of arguments. Expected 1, got " + args.length);
-        }
-    }
 
     static void toZip(Map<Path, String> content, Path output) throws IOException {
         try (var zipOutputStream = new ZipOutputStream(Files.newOutputStream(output))) {

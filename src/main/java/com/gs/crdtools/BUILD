@@ -19,7 +19,6 @@ java_library(
     deps = [
         "//src/main/java/com/gs/crdtools:vavr-helpers",
         "@maven//:io_vavr_vavr",
-        "@maven//:org_yaml_snakeyaml",
         "@nryaml",
     ],
 )

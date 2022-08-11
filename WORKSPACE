@@ -5,15 +5,7 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 ## External dependencies ##
 ###########################
 
-load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository", "new_git_repository")
-
-new_git_repository(
-    name = "k8s-config-connector",
-    build_file_content = "exports_files(['install-bundles/install-bundle-workload-identity/crds.yaml'])",
-    commit = "1c096d9a6382fb0b6e54901e5b618f6ee9d0282b",
-    remote = "https://github.com/GoogleCloudPlatform/k8s-config-connector.git",
-    shallow_since = "",
-)
+load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
 git_repository(
     name = "nryaml",
