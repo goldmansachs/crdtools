@@ -8,11 +8,11 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import static com.gs.crdtools.SourceGenFromSpec.OUTPUT_PACKAGE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class GeneratorTest {
 
+    public static final String OUTPUT_PACKAGE = "com.gs.crdtools.generated";
     public static final Path OUTPUT_DIR = Path.of(
             "src/main/java",
             OUTPUT_PACKAGE.replaceAll("\\.", "/")
@@ -35,7 +35,7 @@ public class GeneratorTest {
 
         var input = Path.of(runFiles.rlocation("__main__/src/test/resources/minimal-crd.yaml"));
         var parsedCrd = Generator.parseCrds(List.of(input));
-        var sourceCodeFromSpecs = new Result(Generator.generate(parsedCrd));
+        var sourceCodeFromSpecs = new Result(Generator.generate(parsedCrd, OUTPUT_PACKAGE));
 
         var cronTabSpec = OUTPUT_DIR.resolve("CronTabSpec.java");
         var cronTab = OUTPUT_DIR.resolve("CronTab.java");
@@ -51,7 +51,7 @@ public class GeneratorTest {
 
         var input = Path.of(runFiles.rlocation("__main__/src/test/resources/minimal-crd.yaml"));
         var parsedCrd = Generator.parseCrds(List.of(input));
-        var sourceCodeFromSpecs = new Result(Generator.generate(parsedCrd));
+        var sourceCodeFromSpecs = new Result(Generator.generate(parsedCrd, OUTPUT_PACKAGE));
 
         sourceCodeFromSpecs.assertIn("CronTab.java", "@JsonProperty(\"metadata\")");
         sourceCodeFromSpecs.assertIn("CronTab.java", "@JsonProperty(\"kind\")");
@@ -65,7 +65,7 @@ public class GeneratorTest {
 
         var input = Path.of(runFiles.rlocation("__main__/src/test/resources/minimal-crd.yaml"));
         var parsedCrd = Generator.parseCrds(List.of(input));
-        var sourceCodeFromSpecs = new Result(Generator.generate(parsedCrd));
+        var sourceCodeFromSpecs = new Result(Generator.generate(parsedCrd, OUTPUT_PACKAGE));
 
         sourceCodeFromSpecs.assertIn("CronTab.java", "group = \"stable.example.com\"");
         sourceCodeFromSpecs.assertIn("CronTab.java", "version = \"v1\"");

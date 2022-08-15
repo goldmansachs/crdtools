@@ -61,6 +61,7 @@ java_binary(
     deps = [
         ":gen-source-from-spec",
         ":spec-extractor",
+        "//src/main/java/com/gs/crdtools:crdtools-args-parser",
         "//src/main/java/com/gs/crdtools/codegen:swagger-codegen-extensions",
         "@maven//:io_vavr_vavr",
         "@maven//:org_yaml_snakeyaml",
@@ -73,11 +74,22 @@ java_library(
     srcs = [
         "ApiInformation.java",
         "BaseObject.java",
-        ],
+    ],
     visibility = ["//visibility:public"],
     deps = [
         ":api-annotation",
         ":base-object",
         "@maven//:io_kubernetes_client_java_api",
+    ],
+)
+
+java_library(
+    name = "crdtools-args-parser",
+    srcs = [
+        "CrdToolsArgs.java",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@maven//:io_vavr_vavr",
     ],
 )

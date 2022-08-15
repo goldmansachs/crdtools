@@ -15,7 +15,7 @@ java_library(
         "@maven//:io_swagger_codegen_v3_swagger_codegen",
         "@maven//:io_swagger_codegen_v3_swagger_codegen_generators",
         "@maven//:io_swagger_core_v3_swagger_models",
-        "@maven//:io_swagger_parser_v3_swagger_parser",
+        "@maven//:io_swagger_parser_v3_swagger_parser_v3",
         "@maven//:io_vavr_vavr",
     ],
 )

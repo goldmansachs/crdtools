@@ -13,6 +13,7 @@ java_junit5_test(
     test_package = "com.gs.crdtools",
     deps = [
         ":result-helper",
+        "//src/main/java/com/gs/crdtools:crdtools-args-parser",
         "//src/main/java/com/gs/crdtools:gen-source-from-spec",
         "//src/main/java/com/gs/crdtools:generator",
         "//src/main/java/com/gs/crdtools:spec-extractor",
