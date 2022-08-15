@@ -14,10 +14,9 @@ java_library(
 java_library(
     name = "spec-extractor",
     srcs = ["SpecExtractorHelper.java"],
-    resources = ["@k8s-config-connector//:install-bundles/install-bundle-workload-identity/crds.yaml"],
     visibility = ["//visibility:public"],
     deps = [
-        "//src/main/java/com/gs/crdtools:vavr-helpers",
+        ":vavr-helpers",
         "@maven//:io_vavr_vavr",
         "@nryaml",
     ],
@@ -42,8 +41,8 @@ java_binary(
     main_class = "com.gs.crdtools.SourceGenFromSpec",
     visibility = ["//visibility:public"],
     deps = [
-        "//src/main/java/com/gs/crdtools:spec-extractor",
-        "//src/main/java/com/gs/crdtools:vavr-helpers",
+        ":spec-extractor",
+        ":vavr-helpers",
         "//src/main/java/com/gs/crdtools/codegen:swagger-codegen-extensions",
         "@maven//:io_kubernetes_client_java_api",
         "@maven//:io_swagger_codegen_v3_swagger_codegen",
