@@ -77,8 +77,8 @@ public class SourceGenFromSpec {
                         )
                         .setTypeMappings(
                                 HashMap.of(
-                                        V1ObjectMeta.class.getSimpleName(),
-                                        V1ObjectMeta.class.getCanonicalName()
+                                        V1ObjectMeta.class.getSimpleName(), V1ObjectMeta.class.getCanonicalName(),
+                                        "integer", "Long"
                                 ).toJavaMap()
                         );
 
