@@ -29,16 +29,9 @@ java_library(
     deps = ["@maven//:io_vavr_vavr"],
 )
 
-java_binary(
+java_library(
     name = "gen-source-from-spec",
     srcs = ["SourceGenFromSpec.java"],
-    jvm_flags = [
-        "--add-opens java.base/java.util=ALL-UNNAMED",
-        "-Dmodels",
-        "-DmodelDocs=false",
-        "-DmodelTests=false",
-    ],
-    main_class = "com.gs.crdtools.SourceGenFromSpec",
     visibility = ["//visibility:public"],
     deps = [
         ":spec-extractor",
@@ -55,6 +48,12 @@ java_binary(
 java_binary(
     name = "generator",
     srcs = ["Generator.java"],
+    jvm_flags = [
+        "--add-opens java.base/java.util=ALL-UNNAMED",
+        "-Dmodels",
+        "-DmodelDocs=false",
+        "-DmodelTests=false",
+    ],
     main_class = "com.gs.crdtools.Generator",
     visibility = ["//visibility:public"],
     deps = [
@@ -72,7 +71,7 @@ java_library(
     srcs = [
         "ApiInformation.java",
         "BaseObject.java",
-        ],
+    ],
     visibility = ["//visibility:public"],
     deps = [
         ":api-annotation",
