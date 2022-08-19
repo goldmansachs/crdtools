@@ -1,7 +1,9 @@
 package com.gs.crdtools;
 
 import com.google.devtools.build.runfiles.Runfiles;
+import com.gs.crdtools.SpecExtractorHelper.Metadata;
 import com.resare.nryaml.YAMLUtil;
+import com.resare.nryaml.YAMLValue;
 import io.vavr.collection.HashMap;
 import io.vavr.collection.List;
 import org.junit.jupiter.api.Test;
@@ -9,25 +11,67 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SpecExtractorHelperTest {
 
     @Test
-    void testPullOpenapiSpecsAddsInfo() throws IOException {
+    void testCreateSpec() throws IOException {
+        // given
         var runFiles = Runfiles.create();
-        var input = Path.of(runFiles.rlocation("__main__/src/test/resources/minimal-crd.yaml"));
+        var input = List.of("crd0.yaml", "crd1.yaml")
+                .map("__main__/src/test/resources/%s"::formatted)
+                .map(runFiles::rlocation)
+                .map(Path::of)
+                .flatMap(YAMLUtil::allFromPath)
+                .map(YAMLValue::asMapping);
 
-        var parsedCrd = Generator.parseCrds(List.of(input));
-        java.util.Map<String, Object> specsProperties = (java.util.Map<String, Object>) SpecExtractorHelper.pullOpenapiSpecs(parsedCrd)
-                .get()
-                ._2
-                .get("properties")
-                .get();
+        // when
+        var result = SpecExtractorHelper.createSpec(input);
 
-        assertTrue(specsProperties.containsKey("metadata"));
-        assertTrue(specsProperties.containsKey("kind"));
-        assertTrue(specsProperties.containsKey("apiVersion"));
+        // then
+        var expected = new SpecExtractorHelper.Spec("""
+                components:
+                  schemas:
+                    Phone:
+                      type: object
+                      properties:
+                        colour:
+                          type: string
+                        metadata:
+                          type: V1ObjectMeta
+                        apiVersion:
+                          type: string
+                        kind:
+                          type: string
+                    Tablet:
+                      type: object
+                      properties:
+                        metadata:
+                          type: V1ObjectMeta
+                        apiVersion:
+                          type: string
+                        kind:
+                          type: string
+                        height:
+                          type: integer
+                openapi: 3.0.0
+                paths:
+                  /dummy: {}
+                info:
+                  license:
+                    name: MIT
+                  title: kcc resources
+                  version: 1.0.0
+                """,
+                HashMap.of(
+                    "Phone", new Metadata("example.com", "v1"),
+                    "Tablet", new Metadata("example.org", "v2")
+                )
+        );
+        assertEquals(expected, result);
     }
 
     @Test

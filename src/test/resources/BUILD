@@ -7,6 +7,8 @@ filegroup(
 filegroup(
     name = "test_crds",
     srcs = [
+        "crd0.yaml",
+        "crd1.yaml",
         "managedcertificates-crd.yaml",
         "minimal-crd.yaml",
     ],

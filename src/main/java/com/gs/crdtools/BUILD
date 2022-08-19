@@ -16,17 +16,10 @@ java_library(
     srcs = ["SpecExtractorHelper.java"],
     visibility = ["//visibility:public"],
     deps = [
-        ":vavr-helpers",
         "@maven//:io_vavr_vavr",
+        "@maven//:org_yaml_snakeyaml",
         "@nryaml",
     ],
-)
-
-java_library(
-    name = "vavr-helpers",
-    srcs = ["VavrHelpers.java"],
-    visibility = ["//visibility:public"],
-    deps = ["@maven//:io_vavr_vavr"],
 )
 
 java_library(
@@ -35,7 +28,6 @@ java_library(
     visibility = ["//visibility:public"],
     deps = [
         ":spec-extractor",
-        ":vavr-helpers",
         "//src/main/java/com/gs/crdtools/codegen:swagger-codegen-extensions",
         "@maven//:io_kubernetes_client_java_api",
         "@maven//:io_swagger_codegen_v3_swagger_codegen",

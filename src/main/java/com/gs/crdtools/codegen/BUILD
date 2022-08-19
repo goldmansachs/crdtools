@@ -10,6 +10,7 @@ java_library(
     deps = [
         "//src/main/java/com/gs/crdtools:api-annotation",
         "//src/main/java/com/gs/crdtools:base-object",
+        "//src/main/java/com/gs/crdtools:spec-extractor",
         "@maven//:com_github_jknack_handlebars",
         "@maven//:io_kubernetes_client_java_api",
         "@maven//:io_swagger_codegen_v3_swagger_codegen",

@@ -9,7 +9,7 @@ load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
 git_repository(
     name = "nryaml",
-    commit = "fba01c14d03ee24a57ddeb67b922154fa1d31401",
+    commit = "9dfe6b071aeccb652280564da0077940a5c1fc5f",
     remote = "https://github.com/nresare/nryaml",
 )
 

@@ -1,0 +1,21 @@
+apiVersion: extensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: tablets.example.org
+spec:
+  group: example.org
+  versions:
+    - name: v2
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            height:
+              type: integer
+  scope: Namespaced
+  names:
+    plural: tablets
+    singular: tablet
+    kind: Tablet

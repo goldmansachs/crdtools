@@ -29,27 +29,12 @@ public class SourceGenFromSpecTest {
 
         // when
         assertEquals(
-            HashMap.of(
-                Path.of("some/dir/a.txt"), "content in a",
-                Path.of("some/dir/b.txt"), "content in b"
-            ),
-            result
+                HashMap.of(
+                        Path.of("some/dir/a.txt"), "content in a",
+                        Path.of("some/dir/b.txt"), "content in b"
+                ),
+                result
         );
     }
-
-    @Test
-    void testExtractSpecs() throws IOException {
-        var runFiles = Runfiles.create();
-        var input = Path.of(runFiles.rlocation("__main__/src/test/resources/minimal-crd.yaml"));
-
-        var parsedCrds = Generator.parseCrds(List.of(input));
-        var specsList = SourceGenFromSpec.extractSpecs(parsedCrds);
-
-        // there is only one crd, therefore there must be only one Spec record
-        assertEquals(1, specsList.size());
-
-        // the spec record must contain the following fields:
-        assertEquals("stable.example.com", specsList.get(0).group());
-        assertEquals("v1", specsList.get(0).version());
-    }
 }
+
