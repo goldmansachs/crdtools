@@ -14,3 +14,9 @@ filegroup(
     ],
     visibility = ["//visibility:public"],
 )
+
+filegroup(
+    name = "just_one_crd",
+    srcs = ["minimal-crd.yaml"],
+    visibility = ["//visibility:public"],
+)

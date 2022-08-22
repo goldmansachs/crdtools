@@ -37,6 +37,24 @@ java_library(
     ],
 )
 
+java_library(
+    name = "yamlifier",
+    srcs = [
+        "GenerationInformation.java",
+        "Yamlifier.java",
+        "ToYaml.java"
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":api-annotation",
+        "@maven//:io_kubernetes_client_java",
+        "@maven//:io_kubernetes_client_java_api",
+        "@maven//:io_vavr_vavr",
+        "@maven//:org_yaml_snakeyaml",
+        "@nryaml",
+    ],
+)
+
 java_binary(
     name = "generator",
     srcs = ["Generator.java"],
