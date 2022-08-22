@@ -1,5 +1,6 @@
 package com.gs.crdtools;
 
+import com.resare.nryaml.YAMLMapping;
 import com.resare.nryaml.YAMLUtil;
 import com.resare.nryaml.YAMLValue;
 import io.vavr.collection.List;
@@ -20,13 +21,13 @@ public class Generator {
         toZip(result, Path.of(args[0]));
     }
 
-    static List<YAMLValue> parseCrds(List<Path> inputs) {
-        return inputs.flatMap(YAMLUtil::allFromPath);
+    static List<YAMLMapping> parseCrds(List<Path> inputs) {
+        return inputs.flatMap(YAMLUtil::allFromPath).map(YAMLValue::asMapping);
     }
 
-    static Map<Path, String> generate(List<YAMLValue> crds) throws IOException {
-        var specs = SourceGenFromSpec.extractSpecs(crds);
-        return SourceGenFromSpec.generateSourceCodeFromSpecs(specs);
+    static Map<Path, String> generate(List<YAMLMapping> crds) throws IOException {
+        var spec = SpecExtractorHelper.createSpec(crds);
+        return SourceGenFromSpec.generateSource(spec);
     }
 
 }

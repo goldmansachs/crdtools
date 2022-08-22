@@ -3,10 +3,11 @@ package com.gs.crdtools.codegen;
 import com.google.devtools.build.runfiles.Runfiles;
 import com.gs.crdtools.ApiInformation;
 import com.gs.crdtools.Result;
-import com.gs.crdtools.generated.CronTab;
 import com.gs.crdtools.SourceGenFromSpec;
+import com.gs.crdtools.SpecExtractorHelper;
+import com.gs.crdtools.generated.CronTab;
+import io.vavr.collection.HashMap;
 import io.vavr.collection.HashSet;
-import io.vavr.collection.List;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -15,7 +16,6 @@ import java.nio.file.Path;
 
 import static com.gs.crdtools.SourceGenFromSpec.OUTPUT_PACKAGE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 
 public class CustomGenerationTest {
 
@@ -29,8 +29,8 @@ public class CustomGenerationTest {
         var runFiles = Runfiles.create();
 
         var p = Path.of(runFiles.rlocation("__main__/src/test/resources/minimal-openapi.yaml"));
-        var crd = List.of(new SourceGenFromSpec.Spec("", "", Files.readString(p)));
-        var result = new Result(SourceGenFromSpec.generateSourceCodeFromSpecs(crd));
+        var spec = new SpecExtractorHelper.Spec(Files.readString(p), HashMap.of("Thing", new SpecExtractorHelper.Metadata("group", "version")));
+        var result = new Result(SourceGenFromSpec.generateSource(spec));
 
         assertEquals(HashSet.of(OUTPUT_FILE), result.inner().keySet());
         result.assertIn("Thing.java", "@ApiInformation");

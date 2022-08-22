@@ -1,11 +1,16 @@
 package com.gs.crdtools.codegen;
 
 import com.gs.crdtools.BaseObject;
+import com.gs.crdtools.SpecExtractorHelper;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.swagger.codegen.v3.CodegenModel;
 import io.swagger.codegen.v3.generators.java.SpringCodegen;
 import io.swagger.v3.oas.models.media.Schema;
+import io.vavr.collection.HashMap;
 import io.vavr.collection.List;
+import io.vavr.control.Option;
+
+import java.util.Map;
 
 /**
  * An extension of SpringCodegen with some custom functionality.
@@ -20,6 +25,23 @@ public class CrdtoolsCodegen extends SpringCodegen {
         templateEngine = new CustomOverrideTemplateEngine(this);
         importMapping.put("BaseObject", "com.gs.crdtools.BaseObject");
         importMapping.put("ApiInformation", "com.gs.crdtools.ApiInformation");
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Map<String, Object> postProcessAllModels(Map<String, Object> allModels) {
+        for (var entry : allModels.entrySet()) {
+            var name = entry.getKey();
+            Map<String, Object> models = (Map<String, Object>) entry.getValue();
+            HashMap<String, SpecExtractorHelper.Metadata> metadataMap = (HashMap<String, SpecExtractorHelper.Metadata>) models.get("crdtoolsMetadataMap");
+            Option<SpecExtractorHelper.Metadata> metadata = metadataMap.get(name);
+            if (metadata.isEmpty()) {
+                continue;
+            }
+            models.put("crdGroup", metadata.get().group());
+            models.put("crdVersion", metadata.get().version());
+        }
+        return super.postProcessAllModels(allModels);
     }
 
     /**
@@ -77,4 +99,6 @@ public class CrdtoolsCodegen extends SpringCodegen {
     public String toBooleanGetter(String name) {
         return toGetter(name);
     }
+
+
 }
