@@ -47,6 +47,7 @@ maven_install(
         "com.github.jknack:handlebars:4.3.0",
         "javax.validation:validation-api:2.0.1.Final",
         "io.kubernetes:client-java-api:16.0.0",
+        "info.picocli:picocli:4.6.3",
     ],
     fetch_sources = True,
     # The rules_jvm_external, when adding the swagger dependencies, downloads

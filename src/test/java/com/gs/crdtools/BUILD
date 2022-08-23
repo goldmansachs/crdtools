@@ -19,6 +19,7 @@ java_junit5_test(
         "//src/main/java/com/gs/crdtools/codegen:swagger-codegen-extensions",
         "@bazel_tools//tools/java/runfiles",
         "@maven//:io_vavr_vavr",
+        "@maven//:info_picocli_picocli",
         "@nryaml",
     ],
 )

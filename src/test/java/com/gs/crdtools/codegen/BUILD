@@ -31,8 +31,9 @@ genrule(
         "generated.srcjar",
     ],
     cmd = """$(location //src/main/java/com/gs/crdtools:generator) \
-        $(location generated.srcjar) \
-        $(locations //src/test/resources:test_crds)""",
+        $(locations //src/test/resources:test_crds) \
+        -o $(location generated.srcjar) \
+        -p com.gs.crdtools.generated""",
     tools = ["//src/main/java/com/gs/crdtools:generator"],
     visibility = ["//visibility:public"],
 )
