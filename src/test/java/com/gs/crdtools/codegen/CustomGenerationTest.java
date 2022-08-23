@@ -14,11 +14,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static com.gs.crdtools.SourceGenFromSpec.OUTPUT_PACKAGE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CustomGenerationTest {
 
+    public static final String OUTPUT_PACKAGE = "com.gs.crdtools.generated";
     public static final Path OUTPUT_FILE = Path.of(
             "src/main/java",
             OUTPUT_PACKAGE.replaceAll("\\.", "/")
@@ -30,7 +30,7 @@ public class CustomGenerationTest {
 
         var p = Path.of(runFiles.rlocation("__main__/src/test/resources/minimal-openapi.yaml"));
         var spec = new SpecExtractorHelper.Spec(Files.readString(p), HashMap.of("Thing", new SpecExtractorHelper.Metadata("group", "version")));
-        var result = new Result(SourceGenFromSpec.generateSource(spec));
+        var result = new Result(SourceGenFromSpec.generateSource(spec, OUTPUT_PACKAGE));
 
         assertEquals(HashSet.of(OUTPUT_FILE), result.inner().keySet());
         result.assertIn("Thing.java", "@ApiInformation");

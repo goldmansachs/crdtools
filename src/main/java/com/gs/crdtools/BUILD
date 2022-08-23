@@ -52,6 +52,7 @@ java_binary(
         ":gen-source-from-spec",
         ":spec-extractor",
         "//src/main/java/com/gs/crdtools/codegen:swagger-codegen-extensions",
+        "@maven//:info_picocli_picocli",
         "@maven//:io_vavr_vavr",
         "@maven//:org_yaml_snakeyaml",
         "@nryaml",
