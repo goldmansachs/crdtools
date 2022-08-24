@@ -54,6 +54,7 @@ class SourceGenFromSpec {
                     .setLang(CrdtoolsCodegen.class.getCanonicalName())
                     .setOutputDir(tmpOutputDir.toAbsolutePath().toString())
                     .setModelPackage(modelPackage)
+                    .setSkipInlineModelMatches(true)
                     // CodegenConfigurator modifies its Map arguments, so we need to wrap it in something mutable
                     .setAdditionalProperties(
                             HashMap.of(
