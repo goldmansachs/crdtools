@@ -1,6 +1,5 @@
 package com.gs.crdtools;
 
-import com.gs.crdtools.codegen.CrdtoolsCodegen;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.swagger.codegen.v3.DefaultGenerator;
 import io.swagger.codegen.v3.config.CodegenConfigurator;
@@ -23,7 +22,7 @@ import java.util.zip.ZipOutputStream;
  * It can be run using the following bazel rule:
  * - bazel build //:kcc_java_genned.
  */
-public class SourceGenFromSpec {
+class SourceGenFromSpec {
 
     static void toZip(Map<Path, String> content, Path output) throws IOException {
         try (var zipOutputStream = new ZipOutputStream(Files.newOutputStream(output))) {
@@ -41,7 +40,7 @@ public class SourceGenFromSpec {
      * The result is a collection of jar files zipped within a .srcjar file at the path provided.
      * @throws IOException If any error occurs while loading the given paths.
      */
-    public static Map<Path, String> generateSource(SpecExtractorHelper.Spec spec, String modelPackage) throws IOException {
+    static Map<Path, String> generateSource(SpecExtractorHelper.Spec spec, String modelPackage) throws IOException {
         // setting this system property has the interesting effect of preventing the
         // generation of a whole set of unrelated files that we don't care about.
         System.setProperty("generateModels", "true");

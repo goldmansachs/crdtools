@@ -14,7 +14,7 @@ import java.nio.file.Path;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class GeneratorTest {
+class GeneratorTest {
 
     public static final String OUTPUT_PACKAGE = "com.gs.crdtools.generated";
     public static final Path OUTPUT_DIR = Path.of(

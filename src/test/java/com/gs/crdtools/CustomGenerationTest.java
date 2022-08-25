@@ -1,10 +1,6 @@
-package com.gs.crdtools.codegen;
+package com.gs.crdtools;
 
 import com.google.devtools.build.runfiles.Runfiles;
-import com.gs.crdtools.ApiInformation;
-import com.gs.crdtools.Result;
-import com.gs.crdtools.SourceGenFromSpec;
-import com.gs.crdtools.SpecExtractorHelper;
 import com.gs.crdtools.generated.CronTab;
 import io.vavr.collection.HashMap;
 import io.vavr.collection.HashSet;
@@ -16,7 +12,7 @@ import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CustomGenerationTest {
+class CustomGenerationTest {
 
     public static final String OUTPUT_PACKAGE = "com.gs.crdtools.generated";
     public static final Path OUTPUT_FILE = Path.of(

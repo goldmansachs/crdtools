@@ -12,14 +12,16 @@ java_junit5_test(
     ],
     test_package = "com.gs.crdtools",
     deps = [
+        ":compiles-generated-java",
         ":result-helper",
+        "//src/main/java/com/gs/crdtools:api-annotation",
         "//src/main/java/com/gs/crdtools:gen-source-from-spec",
         "//src/main/java/com/gs/crdtools:generator",
         "//src/main/java/com/gs/crdtools:spec-extractor",
-        "//src/main/java/com/gs/crdtools/codegen:swagger-codegen-extensions",
+        "//src/main/java/com/gs/crdtools:swagger-codegen-extensions",
         "@bazel_tools//tools/java/runfiles",
-        "@maven//:io_vavr_vavr",
         "@maven//:info_picocli_picocli",
+        "@maven//:io_vavr_vavr",
         "@nryaml",
     ],
 )
@@ -31,5 +33,36 @@ java_library(
     deps = [
         "@maven//:io_vavr_vavr",
         "@org_junit_jupiter_junit_jupiter_api//jar",
+    ],
+)
+
+genrule(
+    name = "generate-java-from-crds",
+    srcs = [
+        "//src/test/resources:test_crds",
+    ],
+    outs = [
+        "generated.srcjar",
+    ],
+    cmd = """$(location //src/main/java/com/gs/crdtools:generator) \
+        $(locations //src/test/resources:test_crds) \
+        -o $(location generated.srcjar) \
+        -p com.gs.crdtools.generated""",
+    tools = [
+        "//src/main/java/com/gs/crdtools:generator",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+java_library(
+    name = "compiles-generated-java",
+    srcs = [":generate-java-from-crds"],
+    deps = [
+        "//src/main/java/com/gs/crdtools:api-annotation",
+        "//src/main/java/com/gs/crdtools:base-object",
+        "@maven//:com_fasterxml_jackson_core_jackson_annotations",
+        "@maven//:io_kubernetes_client_java_api",
+        "@maven//:io_swagger_core_v3_swagger_annotations",
+        "@maven//:javax_validation_validation_api",
     ],
 )

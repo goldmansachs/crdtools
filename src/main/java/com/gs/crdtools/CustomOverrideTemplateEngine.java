@@ -1,9 +1,8 @@
-package com.gs.crdtools.codegen;
+package com.gs.crdtools;
 
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.io.TemplateLoader;
-import com.gs.crdtools.codegen.OverrideTemplateLoader;
 import io.swagger.codegen.v3.CodegenConfig;
 import io.swagger.codegen.v3.templates.HandlebarTemplateEngine;
 

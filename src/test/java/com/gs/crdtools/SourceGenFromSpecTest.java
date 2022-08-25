@@ -1,8 +1,6 @@
 package com.gs.crdtools;
 
-import com.google.devtools.build.runfiles.Runfiles;
 import io.vavr.collection.HashMap;
-import io.vavr.collection.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -13,7 +11,7 @@ import java.nio.file.Path;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class SourceGenFromSpecTest {
+class SourceGenFromSpecTest {
 
     @Test
     void testReadDir(@TempDir Path temp) throws IOException {

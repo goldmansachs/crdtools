@@ -7,8 +7,8 @@ import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public record Result(Map<Path, String> inner) {
-    public void assertIn(String file, String in) {
+record Result(Map<Path, String> inner) {
+    void assertIn(String file, String in) {
 
         Path key = Stream.ofAll(inner.keySet()).find(candidate -> candidate.endsWith(file))
                 .getOrElseThrow(IllegalArgumentException::new);
