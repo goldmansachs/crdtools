@@ -4,7 +4,6 @@ import com.resare.nryaml.YAMLMapping;
 import com.resare.nryaml.YAMLSequence;
 import com.resare.nryaml.YAMLUtil;
 import com.resare.nryaml.YAMLValue;
-import io.vavr.Tuple;
 import io.vavr.Tuple2;
 import io.vavr.Tuple4;
 import io.vavr.collection.HashMap;
@@ -14,12 +13,12 @@ import io.vavr.collection.Map;
 /**
  * A helper class to extract the openAPI specs from a given yaml file in the format of a string.
  */
-public class SpecExtractorHelper {
+class SpecExtractorHelper {
 
-    public record Metadata(String group, String version) {}
+    record Metadata(String group, String version) {}
     // A single openapi spec, yaml serialized into a string and map between class names
     // and a tuple holding version and group strings
-    public record Spec(String openapiSpec, Map<String, Metadata> metadata) {}
+    record Spec(String openapiSpec, Map<String, Metadata> metadata) {}
 
     static Spec createSpec(List<YAMLMapping> crds) {
         Map<String, Metadata> metadata = HashMap.empty();

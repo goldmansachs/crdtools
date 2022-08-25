@@ -1,4 +1,4 @@
-package com.gs.crdtools.codegen;
+package com.gs.crdtools;
 
 import io.swagger.codegen.v3.templates.CodegenTemplateLoader;
 

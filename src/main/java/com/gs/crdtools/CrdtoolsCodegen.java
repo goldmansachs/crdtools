@@ -1,7 +1,5 @@
-package com.gs.crdtools.codegen;
+package com.gs.crdtools;
 
-import com.gs.crdtools.BaseObject;
-import com.gs.crdtools.SpecExtractorHelper;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.swagger.codegen.v3.CodegenModel;
 import io.swagger.codegen.v3.generators.java.SpringCodegen;
