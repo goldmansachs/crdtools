@@ -3,6 +3,7 @@ package com.gs.crdtools;
 import com.google.devtools.build.runfiles.Runfiles;
 import io.vavr.collection.HashSet;
 import io.vavr.collection.List;
+import io.vavr.control.Option;
 import org.junit.jupiter.api.Test;
 import picocli.CommandLine;
 
@@ -39,7 +40,7 @@ class GeneratorTest {
 
         var input = Path.of(runFiles.rlocation("__main__/src/test/resources/minimal-crd.yaml"));
         var parsedCrd = Generator.parseCrds(List.of(input));
-        var sourceCodeFromSpecs = new Result(Generator.generate(parsedCrd, OUTPUT_PACKAGE));
+        var sourceCodeFromSpecs = new Result(Generator.generate(parsedCrd, OUTPUT_PACKAGE, Option.none()));
 
         var cronTabSpec = OUTPUT_DIR.resolve("CronTabSpec.java");
         var cronTab = OUTPUT_DIR.resolve("CronTab.java");
@@ -58,7 +59,7 @@ class GeneratorTest {
                 Path.of(runFiles.rlocation("__main__/src/test/resources/managedcertificates-crd.yaml"))
         );
         var parsedCrd = Generator.parseCrds(input);
-        var sourceCodeFromSpecs = new Result(Generator.generate(parsedCrd, OUTPUT_PACKAGE));
+        var sourceCodeFromSpecs = new Result(Generator.generate(parsedCrd, OUTPUT_PACKAGE, Option.none()));
 
         var expectedFiles = List.of(
                 "CronTab.java",
@@ -102,7 +103,7 @@ class GeneratorTest {
 
         var input = Path.of(runFiles.rlocation("__main__/src/test/resources/minimal-crd.yaml"));
         var parsedCrd = Generator.parseCrds(List.of(input));
-        var sourceCodeFromSpecs = new Result(Generator.generate(parsedCrd, OUTPUT_PACKAGE));
+        var sourceCodeFromSpecs = new Result(Generator.generate(parsedCrd, OUTPUT_PACKAGE, Option.none()));
 
         sourceCodeFromSpecs.assertIn("CronTab.java", "@JsonProperty(\"metadata\")");
         sourceCodeFromSpecs.assertIn("CronTab.java", "@JsonProperty(\"kind\")");
@@ -116,7 +117,7 @@ class GeneratorTest {
 
         var input = Path.of(runFiles.rlocation("__main__/src/test/resources/minimal-crd.yaml"));
         var parsedCrd = Generator.parseCrds(List.of(input));
-        var sourceCodeFromSpecs = new Result(Generator.generate(parsedCrd, OUTPUT_PACKAGE));
+        var sourceCodeFromSpecs = new Result(Generator.generate(parsedCrd, OUTPUT_PACKAGE, Option.none()));
 
         sourceCodeFromSpecs.assertIn("CronTab.java", "group = \"stable.example.com\"");
         sourceCodeFromSpecs.assertIn("CronTab.java", "version = \"v1\"");
