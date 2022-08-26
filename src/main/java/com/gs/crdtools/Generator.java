@@ -5,9 +5,11 @@ import com.resare.nryaml.YAMLUtil;
 import com.resare.nryaml.YAMLValue;
 import io.vavr.collection.List;
 import io.vavr.collection.Map;
+import io.vavr.control.Option;
 import picocli.CommandLine;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static com.gs.crdtools.SourceGenFromSpec.toZip;
@@ -22,12 +24,17 @@ public class Generator implements Runnable {
     @CommandLine.Option(names = {"-o", "--out", "--output"}, description = "Output file")
     String output = "generated.srcjar";
 
+    @CommandLine.Option(
+            names = {"--spec-output-path"},
+            description = "Output the intermediate openapi spec to this path")
+    private String specOutput;
+
     @CommandLine.Parameters(arity = "1..*", description = "One or more CRD(s) input")
     String[] inputCrds;
 
     public void run() {
         try {
-            Generator.generateAndZip(inputCrds, targetPackage, output);
+            Generator.generateAndZip(inputCrds, targetPackage, output, Option.of(specOutput));
         } catch (IOException e) {
             throw new RuntimeException("An unexpected error occurred. " +
                     "Make sure to follow the usage instructions for this tool.");
@@ -39,9 +46,13 @@ public class Generator implements Runnable {
         System.exit(exitCode);
     }
 
-    static void generateAndZip(String[] inputCrds, String packageName, String outputPath) throws IOException {
+    static void generateAndZip(
+            String[] inputCrds,
+            String packageName,
+            String outputPath,
+            Option<String> specOutputPath) throws IOException {
         var crdsList = parseCrds(List.of(inputCrds).map(Path::of));
-        var result = generate(crdsList, packageName);
+        var result = generate(crdsList, packageName, specOutputPath);
         toZip(result, Path.of(outputPath));
     }
 
@@ -49,8 +60,11 @@ public class Generator implements Runnable {
         return inputs.flatMap(YAMLUtil::allFromPath).map(YAMLValue::asMapping);
     }
 
-    static Map<Path, String> generate(List<YAMLMapping> crds, String packageName) throws IOException {
+    static Map<Path, String> generate(List<YAMLMapping> crds, String packageName, Option<String> specOutputPath) throws IOException {
         var spec = SpecExtractorHelper.createSpec(crds);
+        if (specOutputPath.isDefined()) {
+            Files.writeString(Path.of(specOutputPath.get()), spec.openapiSpec());
+        }
         return SourceGenFromSpec.generateSource(spec, packageName);
     }
 
