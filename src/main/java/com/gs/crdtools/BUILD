@@ -2,7 +2,6 @@ java_library(
     name = "base-object",
     srcs = [
         "BaseObject.java",
-        "Generated.java",
     ],
     visibility = ["//visibility:public"],
     deps = ["@maven//:io_kubernetes_client_java_api"],
@@ -10,7 +9,10 @@ java_library(
 
 java_library(
     name = "api-annotation",
-    srcs = ["ApiInformation.java"],
+    srcs = [
+        "ApiInformation.java", 
+        "Generated.java",
+    ],
     visibility = ["//visibility:public"],
 )
 

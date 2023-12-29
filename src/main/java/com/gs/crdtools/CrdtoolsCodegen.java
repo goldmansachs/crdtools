@@ -23,6 +23,7 @@ public class CrdtoolsCodegen extends SpringCodegen {
         templateEngine = new CustomOverrideTemplateEngine(this);
         importMapping.put("BaseObject", "com.gs.crdtools.BaseObject");
         importMapping.put("ApiInformation", "com.gs.crdtools.ApiInformation");
+        importMapping.put("Generated", "com.gs.crdtools.Generated");
     }
 
     @SuppressWarnings("unchecked")
@@ -56,6 +57,7 @@ public class CrdtoolsCodegen extends SpringCodegen {
 
         ret.imports.add("BaseObject");
         ret.imports.add("ApiInformation");
+        ret.imports.add("Generated")
 
         boolean hasMetadata = List.ofAll(ret.requiredVars)
                 .appendAll(ret.optionalVars)
