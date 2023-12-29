@@ -57,7 +57,7 @@ public class CrdtoolsCodegen extends SpringCodegen {
 
         ret.imports.add("BaseObject");
         ret.imports.add("ApiInformation");
-        ret.imports.add("Generated")
+        ret.imports.add("Generated");
 
         boolean hasMetadata = List.ofAll(ret.requiredVars)
                 .appendAll(ret.optionalVars)
