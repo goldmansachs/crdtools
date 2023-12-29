@@ -1,6 +1,9 @@
 java_library(
     name = "base-object",
-    srcs = ["BaseObject.java"],
+    srcs = [
+        "BaseObject.java",
+        "Generated.java",
+    ],
     visibility = ["//visibility:public"],
     deps = ["@maven//:io_kubernetes_client_java_api"],
 )
