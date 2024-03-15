@@ -2,8 +2,8 @@ package com.gs.crdtools;
 
 import com.google.devtools.build.runfiles.Runfiles;
 import com.gs.crdtools.SpecExtractorHelper.Metadata;
-import com.resare.nryaml.YAMLUtil;
-import com.resare.nryaml.YAMLValue;
+import com.nryaml.YAMLUtil;
+import com.nryaml.YAMLValue;
 import io.vavr.collection.HashMap;
 import io.vavr.collection.List;
 import org.junit.jupiter.api.Test;

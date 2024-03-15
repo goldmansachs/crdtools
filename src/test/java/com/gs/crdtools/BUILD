@@ -22,7 +22,7 @@ java_junit5_test(
         "@bazel_tools//tools/java/runfiles",
         "@maven//:info_picocli_picocli",
         "@maven//:io_vavr_vavr",
-        "@nryaml",
+        "//src/main/java/com/nryaml:nryaml",
     ],
 )
 

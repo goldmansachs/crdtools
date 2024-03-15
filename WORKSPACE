@@ -7,12 +7,6 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
-git_repository(
-    name = "nryaml",
-    commit = "9dfe6b071aeccb652280564da0077940a5c1fc5f",
-    remote = "https://github.com/nresare/nryaml",
-)
-
 ###########################
 ##    Java build rules   ##
 ###########################
@@ -36,14 +30,14 @@ maven_install(
         "io.kubernetes:client-java-api:14.0.1",
         "io.vavr:vavr:0.10.3",
         "org.apache.commons:commons-compress:1.21",
-        "org.yaml:snakeyaml:1.30",
-        "com.fasterxml.jackson.core:jackson-databind:2.13.3",
-        "com.fasterxml.jackson.core:jackson-core:2.13.3",
-        "com.fasterxml.jackson.core:jackson-annotations:2.13.3",
-        "io.swagger.codegen.v3:swagger-codegen:3.0.35",
-        "io.swagger.codegen.v3:swagger-codegen-generators:1.0.34",
-        "io.swagger.parser.v3:swagger-parser-v3:2.1.1",
-        "io.swagger.core.v3:swagger-models:2.2.1",
+        "org.yaml:snakeyaml:2.2",
+        "com.fasterxml.jackson.core:jackson-databind:2.17.0",
+        "com.fasterxml.jackson.core:jackson-core:2.17.0",
+        "com.fasterxml.jackson.core:jackson-annotations:2.17.0",
+        "io.swagger.codegen.v3:swagger-codegen:3.0.54",
+        "io.swagger.codegen.v3:swagger-codegen-generators:1.0.47",
+        "io.swagger.parser.v3:swagger-parser-v3:2.1.20",
+        "io.swagger.core.v3:swagger-models:2.2.20",
         "com.github.jknack:handlebars:4.3.0",
         "javax.validation:validation-api:2.0.1.Final",
         "io.kubernetes:client-java-api:16.0.0",
