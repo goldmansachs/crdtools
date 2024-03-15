@@ -1,9 +1,9 @@
 package com.gs.crdtools;
 
-import com.resare.nryaml.YAMLMapping;
-import com.resare.nryaml.YAMLSequence;
-import com.resare.nryaml.YAMLUtil;
-import com.resare.nryaml.YAMLValue;
+import com.nryaml.YAMLMapping;
+import com.nryaml.YAMLSequence;
+import com.nryaml.YAMLUtil;
+import com.nryaml.YAMLValue;
 import io.vavr.Tuple2;
 import io.vavr.Tuple4;
 import io.vavr.collection.HashMap;

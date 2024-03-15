@@ -23,7 +23,7 @@ java_library(
     deps = [
         "@maven//:io_vavr_vavr",
         "@maven//:org_yaml_snakeyaml",
-        "@nryaml",
+        "//src/main/java/com/nryaml:nryaml",
     ],
 )
 
@@ -61,7 +61,7 @@ java_library(
         "@maven//:io_swagger_codegen_v3_swagger_codegen",
         "@maven//:io_vavr_vavr",
         "@maven//:org_yaml_snakeyaml",
-        "@nryaml",
+        "//src/main/java/com/nryaml:nryaml",
     ],
 )
 
@@ -83,7 +83,7 @@ java_binary(
         "@maven//:info_picocli_picocli",
         "@maven//:io_vavr_vavr",
         "@maven//:org_yaml_snakeyaml",
-        "@nryaml",
+        "//src/main/java/com/nryaml:nryaml",
     ],
 )
 

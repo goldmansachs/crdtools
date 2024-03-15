@@ -26,6 +26,11 @@ the list of repositories. After this is done, the bazel plugin compatible with r
 versions should be available by clicking "Marketplace" in the Plugins and searching for Bazel.
 This has been tested with IntelliJ Idea Community 2022.1.2.
 
-## Credits
-The code that this project is based on has been written by Jonathan Perry at
-[Goldman Sachs](https://www.gs.com/).
+## Credits and Authors
+
+- For a list of contributors to `crdtools`, please see the [AUTHORS.md](AUTHORS.md) file.
+- Special acknowledgments and external contributions are listed in the [CREDITS.md](CREDITS.md) file.
+
+## License
+
+Apache License 2.0, see [LICENSE](LICENSE) file.

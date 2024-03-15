@@ -1,8 +1,8 @@
 package com.gs.crdtools;
 
-import com.resare.nryaml.YAMLMapping;
-import com.resare.nryaml.YAMLUtil;
-import com.resare.nryaml.YAMLValue;
+import com.nryaml.YAMLMapping;
+import com.nryaml.YAMLUtil;
+import com.nryaml.YAMLValue;
 import io.vavr.collection.List;
 import io.vavr.collection.Map;
 import io.vavr.control.Option;
