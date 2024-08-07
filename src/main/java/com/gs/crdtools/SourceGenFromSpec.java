@@ -44,6 +44,7 @@ class SourceGenFromSpec {
         // setting this system property has the interesting effect of preventing the
         // generation of a whole set of unrelated files that we don't care about.
         System.setProperty("generateModels", "true");
+        System.setProperty("maxYamlCodePoints", "1073741824"); // 1 gb (1024 * 1024 * 1024)
 
         HashMap <Path, String> result = HashMap.empty();
         var tmpOutputDir = Files.createTempDirectory("openAPIGen");
