@@ -3,6 +3,7 @@ package com.gs.crdtools;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.swagger.codegen.v3.CodegenModel;
 import io.swagger.codegen.v3.generators.java.SpringCodegen;
+import io.swagger.v3.oas.models.media.ComposedSchema;
 import io.swagger.v3.oas.models.media.Schema;
 import io.vavr.collection.HashMap;
 import io.vavr.collection.List;
@@ -70,6 +71,35 @@ public class CrdtoolsCodegen extends SpringCodegen {
         }
 
         return ret;
+    }
+
+    /**
+     * Transform the model's properties which use the AnyOf schema, into a flattened schema
+     * that uses the first schema in the list.
+     */
+    @Override
+    protected void addVars(CodegenModel codegenModel, Map<String, Schema> properties, java.util.List<String> required) {
+        for (Map.Entry<String, Schema> entry : properties.entrySet()) {
+            var propName = entry.getKey();
+            var propSchema = entry.getValue();
+
+            // Unfortunately, SwaggerCodegen doesn't handle AnyOf schemas correctly. Here, we force it
+            // to use a String schema if it is present in the AnyOf list, otherwise we just take the first.
+            // We prefer String because "5m 30s" is more readable than "330"
+            if (propSchema instanceof ComposedSchema cs && cs.getAnyOf() != null && !cs.getAnyOf().isEmpty()) {
+                var maybeStringSubSchema = cs.getAnyOf().stream()
+                        .filter(s -> "string".equals(s.getType()))
+                        .findFirst();
+
+                if (maybeStringSubSchema.isPresent()) {
+                    properties.replace(propName, maybeStringSubSchema.get());
+                } else {
+                    var subSchema = cs.getAnyOf().get(0);
+                    properties.replace(propName, subSchema);
+                }
+            }
+        }
+        super.addVars(codegenModel, properties, required);
     }
 
     /**
